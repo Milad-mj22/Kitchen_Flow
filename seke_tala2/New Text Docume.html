@@ -1,0 +1,427 @@
+<html lang="en" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style type="text/css">
+        .back {
+            color: white;
+            width: 1000px;
+            height: 1900px;
+            background-color: black;
+            position: relative;
+        }
+        
+        .inner-line {
+            top: 750px;
+            height: 15px;
+            width: 100%;
+            background-color: black;
+            position: absolute;
+        }
+        
+        .menu {
+            height: 1150px;
+            width: 100%;
+            /*  background-color: aquamarine;*/
+            position: absolute;
+            top: 800px;
+        }
+        
+        .cat-contain {
+            width: 100%;
+            /* background-color: blue;*/
+            height: auto;
+            margin-top: 15px;
+        }
+        
+        .cl-co {
+            margin-right: 2.25%;
+            float: right;
+            height: 1150px;
+            /*   background-color: brown;*/
+            width: 30%;
+        }
+        
+        .title-contain {
+            width: 100%;
+            height: 70px;
+            /* background-color: blueviolet;*/
+        }
+        
+        .title {
+            float: right;
+            width: 65%;
+            text-align: center;
+            font-size: 45px;
+            font-weight: bold;
+            height: 100%;
+        }
+        
+        .cat-pic {
+            float: right;
+            width: 35%;
+            /* background-color: burlywood;*/
+            height: 100%;
+        }
+        
+        .prs-contain {
+            width: 95%;
+            margin-left: 2.5%;
+            margin-right: 2.5%;
+            height: auto;
+        }
+        
+        .pr {
+            margin-top: 20px;
+            width: 100%;
+            height: auto;
+            /* background-color: chartreuse;*/
+        }
+        
+        .pr-title {
+            font-size: 28px;
+            font-weight: 900;
+            float: right;
+            height: 100%;
+            width: 75%;
+            text-align: center;
+        }
+        
+        .pr-price {
+            height: 100%;
+            float: left;
+            color: red;
+            font-size: 40px;
+            width: 25%;
+            text-align: center;
+        }
+        
+        .pr-desc {}
+        
+        .pr_up {
+            height: 45px;
+            width: 100%;
+        }
+        
+        .up {
+            height: 750px;
+            width: 100%;
+        }
+        
+        .iframe {
+            width: 100%;
+            height: 570px;
+        }
+    </style>
+    <script>
+        document.getElementsByTagName('html')[0].requestFullscreen();
+        document.fullscreenEnabled = true;
+    </script>
+</head>
+
+<body>
+    <div class="back">
+        <div class="up">
+            <iframe id="iframe" onload="tvf()" src="https://telewebion.com/live/tv3" class="iframe"></iframe>
+        </div>
+        <div class="inner-line">
+            <img src="pic/logo.png" alt="لوگو" style="width: 400px;height:200px;margin-left:320px;margin-right:320px;position:absolute;margin-top:-100px">
+        </div>
+        <div class="menu">
+            <!--  <div class="cat-contain">
+                <div class="title-contain">
+                    <div class="title">
+
+                    </div>
+                    <div class="cat-pic">
+
+                    </div>
+                </div>
+                <div class="prs-contain">
+                    <div class="pr">
+                        <div class="pr-title">
+
+                        </div>
+                        <div class="pr-price">
+
+                        </div>
+                        <div class="pr-desc">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        -->
+            <!--  <div class="cl-co">
+                <div class="cat-contain"><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div>
+                <div class="cat-contain"><br><br><br><br><br><br><br><br><br><br><br><br><br></div>
+            </div>
+            <div class="cl-co">
+                <div class="cat-contain"><br><br><br><br><br><br><br><br><br><br><br><br><br></div>
+                <div class="cat-contain"><br><br><br><br><br><br><br><br><br><br><br><br><br></div>
+            </div>
+            <div class="cl-co">
+                <div class="cat-contain"><br><br><br><br><br><br><br><br><br><br><br><br><br></div>
+            </div>
+-->
+            <div class="cl-co">
+                <!--            cat1            -->
+                <div class="cat-contain">
+                    <div class="title-contain">
+                        <div class="title">
+                            pizza
+                        </div>
+                        <div class="cat-pic">
+
+                        </div>
+                    </div>
+                    <div class="prs-contain">
+
+                        <!--                    pr 1                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    پیتزا مخصوص برنارد
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                سس ناپولیتن ، پنیر پیتزا ، ژامبون گوشت ، ژامبون مرغ ، قارچ ، فلفل دلمه
+                            </div>
+                        </div>
+                        <!--                    pr 2                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    پیتزا مرغ و قارچ
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                سس ناپولیتن ، پنیر پیتزا ، ژامبون گوشت ، ژامبون مرغ ، قارچ ، فلفل دلمه
+                            </div>
+                        </div>
+                        <!--                    pr 3                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    پیتزا رست پیف
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                سس ناپولیتن ، پنیر پیتزا ، ژامبون گوشت ، ژامبون مرغ ، قارچ ، فلفل دلمه
+                            </div>
+                        </div>
+                        <!--                    pr 4                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    پیتزا پپرونی
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                سس ناپولیتن ، پنیر پیتزا ، ژامبون گوشت ، ژامبون مرغ ، قارچ ، فلفل دلمه
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <!--            cat2            -->
+                <div class="cat-contain">
+                    <div class="title-contain">
+                        <div class="title">
+                            sandwich 1360
+                        </div>
+                        <div class="cat-pic">
+
+                        </div>
+                    </div>
+                    <div class="prs-contain">
+
+                        <!--                    pr 1                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    پیتزا مخصوص برنارد
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                سس ناپولیتن ، پنیر پیتزا ، ژامبون گوشت ، ژامبون مرغ ، قارچ ، فلفل دلمه
+                            </div>
+                        </div>
+                        <!--                    pr 2                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    پیتزا مرغ و قارچ
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                سس ناپولیتن ، پنیر پیتزا ، ژامبون گوشت ، ژامبون مرغ ، قارچ ، فلفل دلمه
+                            </div>
+                        </div>
+                        <!--                    pr 3                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    پیتزا رست پیف
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                سس ناپولیتن ، پنیر پیتزا ، ژامبون گوشت ، ژامبون مرغ ، قارچ ، فلفل دلمه
+                            </div>
+                        </div>
+                        <!--                    pr 4                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    پیتزا پپرونی
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                سس ناپولیتن ، پنیر پیتزا ، ژامبون گوشت ، ژامبون مرغ ، قارچ ، فلفل دلمه
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+
+
+            </div>
+            <div class="cl-co">
+                <!--            cat1            -->
+                <div class="cat-contain">
+                    <div class="title-contain">
+                        <div class="title">
+                            burger
+                        </div>
+                        <div class="cat-pic">
+
+                        </div>
+                    </div>
+                    <div class="prs-contain">
+
+                        <!--                    pr 1                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    برگر برنارد
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                نان برگر ، 120 گرم گوشت برگر ، پنیر هالومی ، بیکن ، قارچ کاراملی
+                            </div>
+                        </div>
+                        <!--                    pr 2                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    پیتزا مرغ و قارچ
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                سس ناپولیتن ، پنیر پیتزا ، ژامبون گوشت ، ژامبون مرغ ، قارچ ، فلفل دلمه
+                            </div>
+                        </div>
+                        <!--                    pr 3                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    پیتزا رست پیف
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                سس ناپولیتن ، پنیر پیتزا ، ژامبون گوشت ، ژامبون مرغ ، قارچ ، فلفل دلمه
+                            </div>
+                        </div>
+                        <!--                    pr 4                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    پیتزا پپرونی
+                                </div>
+                                <div class="pr-price">
+                                    185
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+                                سس ناپولیتن ، پنیر پیتزا ، ژامبون گوشت ، ژامبون مرغ ، قارچ ، فلفل دلمه
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+        </div>
+</body>
+<script>
+    // function tv(chanel) {
+    //  setTimeout(tvf, 5000);
+    // setTimeout(tvf, 10000);
+    // setTimeout(tvf, 15000);
+    // setTimeout(tvf, 25000);
+    var iframe = document.getElementById('iframe');
+    // iframe.onload = tvf();
+
+    //   }
+
+    function tvf() {
+        iframe.contentWindow.document.getElementsByTagName('html')[0].style.overflow = "hidden";
+        // setTimeout(function)
+        iframe.contentWindow.document.getElementById('video-player-container').style.width = "100%";
+        iframe.contentWindow.document.getElementById('video-player-container').style.position = "fixed";
+        iframe.contentWindow.document.getElementById('video-player-container').style.zIndex = 10000;
+        iframe.contentWindow.document.getElementsByTagName('header')[0].style.display = 'none';
+        iframe.contentWindow.document.getElementById('video-player-container').style.top = '0px';
+        iframe.contentWindow.document.getElementById('video-container_html5_api').muted = true;
+        iframe.contentWindow.document.getElementsByClassName('vjs-poster')[0].click();
+
+    }
+    //globalCallback(this, event, false)
+</script>
+
+</html>

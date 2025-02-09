@@ -7,6 +7,17 @@
 <script src="{% static 'js/all.min.js' %}"></script> <!-- Font Awesome for icons -->
 <html lang="fa" dir="rtl"></html>
 <script>
+
+    function validateForm(event) {
+        const receiptNumber = document.getElementById('receipt_number').value.trim();
+        if (receiptNumber === "") {
+            alert("لطفاً شماره فیش را وارد کنید.");
+            return false; // جلوگیری از ارسال فرم
+        }
+        return true;
+    }
+
+
     function toggleSubmaterials(id) {
         var submaterials = document.getElementById(id);
         if (submaterials.style.display === "none" || submaterials.style.display === "") {
@@ -192,8 +203,15 @@
         </button>
     </div>
 
-    <form method="post" onsubmit="return handleSubmit(event)">
+    <form method="post" onsubmit="return handleSubmit(event) && validateForm(event)">>
         {% csrf_token %}
+
+        <div class="mb-4 d-flex align-items-center" style="width: 100%;">
+            <label for="receipt_number" class="form-label" style="flex: 0 0 150px; font-weight: bold; direction: rtl;">
+                شماره فیش
+            </label>
+            <input type="text" id="receipt_number" name="receipt_number" class="form-control shadow-sm" style="flex: 1; direction: rtl; text-align: right;" required>
+        </div>
 
         <!-- Materials -->
         <div>

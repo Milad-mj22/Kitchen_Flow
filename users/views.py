@@ -1226,6 +1226,17 @@ def add_store(request):
 
         else:
             return
+        
+
+        if 'receipt_number' in data.keys():
+            receipt_number = data['receipt_number']
+            data.pop('receipt_number','Not found')
+
+        else:
+            return
+        
+
+
 
         profile = Profile.objects.get(id = request.user.id)
 
@@ -1241,7 +1252,7 @@ def add_store(request):
                         decimal_value = Decimal(value)
                         raw_material_instance = raw_material.objects.get(name=field)
                         inventory, created = Inventory.objects.get_or_create(inventory_raw_material=raw_material_instance,warehouse=ware_house)
-                        inventory.add_stock(amount=decimal_value,user=profile)
+                        inventory.add_stock(amount=decimal_value,user=profile,receipt_number=receipt_number)
 
 
 
@@ -1570,6 +1581,12 @@ def log_view_store(request):
     raw_materials = RawMaterial.objects.all()
     warehouses = Warehouse.objects.all()
 
+    receipt_number = request.GET.get('receipt_number')
+    receipt_number = int(receipt_number)
+    if receipt_number:
+        logs = logs.filter(receipt_Number=receipt_number)
+
+
     # Filtering based on request parameters
     user = request.GET.get('user')
     if user and user!='select_all':
@@ -1591,12 +1608,12 @@ def log_view_store(request):
 
 
 
-    date_from = request.GET.get('date_from')
-    date_to = request.GET.get('date_to')
-    if date_from and date_to:
-        date_from = convert_georgian2jalali(date_from)
-        date_to = convert_georgian2jalali(date_to)
-        logs = logs.filter(date__range=[date_from, date_to])
+    # date_from = request.GET.get('date_from')
+    # date_to = request.GET.get('date_to')
+    # if date_from and date_to:
+    #     date_from = convert_georgian2jalali(date_from)
+    #     date_to = convert_georgian2jalali(date_to)
+    #     logs = logs.filter(date__range=[date_from, date_to])
 
     # Render the template with logs and filter data
     

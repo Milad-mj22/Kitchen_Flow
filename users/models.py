@@ -332,27 +332,57 @@ class Warehouse(models.Model):
 
     def __str__(self):
         return self.name
+    
+    
+
+
+
+class InputReceipt(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)  # تاریخ ثبت فاکتور
+    updated_at = models.DateTimeField(auto_now=True)  # تاریخ آخرین ویرایش
+    warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name='input_receipts')  # انبار مربوطه
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_input_receipts', blank=True, null=True)  # کاربری که این فاکتور را ثبت کرده است
+    description = models.TextField(blank=True, null=True)  # توضیحات فاکتور
+
+    def __str__(self):
+        return f"Receipt {self.id} - {self.created_at.strftime('%Y-%m-%d')}"
+
+    class Meta:
+        ordering = ['-created_at']
+
+
+
+
+
+
+
+
+
 
 class Inventory(models.Model):
     inventory_raw_material = models.ForeignKey(raw_material, on_delete=models.CASCADE, related_name='inventory')
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name='inventories', default=1)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=0)  # مقدار پیش‌فرض برای quantity
     last_updated = models.DateTimeField(default=timezone.now)
+    receipt_Number = models.IntegerField( null=True,blank=True, default=0)
 
-    def add_stock(self, amount,user):
+
+    def add_stock(self, amount,user,receipt_number):
         """افزودن کالا به انبار و ایجاد لاگ به‌طور خودکار"""
         self.quantity += amount
         self.last_updated = timezone.now()
+        self.receipt_Number = receipt_number  # ذخیره شماره فیش
         self.save()
-        InventoryLog.objects.create(inventory=self, change_type='ADD', amount=amount,user=user)
+        InventoryLog.objects.create(inventory=self, change_type='ADD', amount=amount,user=user,receipt_Number = self.receipt_Number)
 
-    def remove_stock(self, amount,user):
+    def remove_stock(self, amount,user,receipt_number):
         """برداشتن کالا از انبار و ایجاد لاگ به‌طور خودکار"""
         if self.quantity >= amount:
             self.quantity -= amount
             self.last_updated = timezone.now()
+            self.receipt_Number = receipt_number  # ذخیره شماره فیش
             self.save()
-            InventoryLog.objects.create(inventory=self, change_type='REMOVE', amount=amount,user=user)
+            InventoryLog.objects.create(inventory=self, change_type='REMOVE', amount=amount,user=user,receipt_Number = self.receipt_Number)
             return True , 'مقادیر مورد نظر با موفقیت حذف گردید'
         else:
             # raise ValueError("موجودی کافی نیست.")
@@ -362,12 +392,17 @@ class Inventory(models.Model):
     def __str__(self):
         return f"{self.inventory_raw_material.name} - {self.quantity} in {self.warehouse.name}"
 
+
+
+
 class InventoryLog(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='logs')
     change_type = models.CharField(max_length=10, choices=(('ADD', 'افزودن'), ('REMOVE', 'برداشتن')))
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(Profile, on_delete= models.CASCADE,related_name='user_inventory_log',blank=True,null=True,default=1)
+    receipt_Number = models.IntegerField( null=True,blank=True, default=0)
+
 
     def jalali_date(self):
         return JalaliDatetime(self.date).strftime('%Y/%m/%d %H:%M:%S')

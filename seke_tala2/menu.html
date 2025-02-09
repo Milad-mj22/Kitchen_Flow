@@ -1,0 +1,727 @@
+<html lang="en" dir="rtl" style="overflow: hidden;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style type="text/css">
+        @import url(is.css);
+    </style>
+<style type="text/css">
+    body {
+        font-weight: 300;
+        background-color: rgb(121, 50, 50);
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .back {
+        color: white;
+        min-height: 100vh;
+        width: 100%;
+        position: relative;
+        background-color: #111;
+        background-image: url('pic/back.gif');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .back_vid {
+        height: 100%;
+        width: 100%;
+    }
+
+    .inner-line {
+        display: none;
+        top: 50px;
+        height: 2px;
+        width: 100%;
+        background-color: #000;
+        position: absolute;
+    }
+
+    .logoimg {
+        width: 200px;
+        height: auto;
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .menu1, .menu2 {
+        width: 100%;
+        position: absolute;
+        padding: 20px;
+    }
+
+    .menu1 {
+        top: 20px;
+    }
+
+    .menu2 {
+        top: 720px;
+    }
+
+    .menu2 .cat-contain {
+        margin-top: 20px;
+    }
+
+    .cl-co {
+        width: 30%;
+        float: right;
+        height: 750px;
+    }
+
+    .menu2 .cl-co {
+        height: 280px;
+    }
+
+    .title-contain {
+        width: 100%;
+        height: 200px;
+        background-color: #2f2f2f;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .title {
+        font-size: 45px;
+        font-weight: bold;
+        text-align: center;
+        color: #d89a04;
+        text-shadow: 0 0 15px rgba(255, 69, 69, 0.8);
+        stroke: lawngreen;
+        stroke-width: 5px;
+        display: none;
+    }
+
+    .cat-pic {
+        width: 36%;
+        height: 100%;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .menu2 .cat-pic {
+        width: 28%;
+    }
+
+    .prs-contain {
+        width: 95%;
+        margin: 0 auto;
+        margin-top: -20px;
+    }
+
+    .pr {
+        margin-top: 10px;
+        font-family: 'IRANSans', sans-serif;
+        width: 100%;
+        height: auto;
+    }
+
+    .pr-title {
+        font-size: 32px;
+        font-weight: 900;
+        float: right;
+        width: 75%;
+        text-align: center;
+        background-image: url('pic/backtext3.png');
+        background-size: cover;
+    }
+
+    .pr-price {
+        font-family: Rockwell, sans-serif;
+        color: white;
+        font-size: 53px;
+        width: 25%;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .pr-desc {
+        display: none;
+        font-size: 14px;
+        color: #d89a04;
+        font-weight: 900;
+    }
+
+    .up {
+        width: 100%;
+        height: auto;
+    }
+
+    .iframe {
+        width: 100%;
+        height: 570px;
+        border: 0;
+    }
+
+    .co2 {
+        margin-right: 2.5%;
+    }
+
+    .menu2 .co2 {
+        margin-right: 2.5%;
+    }
+
+    .saladline {
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color: #faa545;
+        position: absolute;
+        top: 720px;
+        z-index: 1000;
+    }
+
+    @media (max-width: 768px) {
+        .logoimg {
+            width: 150px;
+            top: 3%;
+        }
+
+        .title {
+            font-size: 30px;
+        }
+
+        .menu1, .menu2 {
+            padding: 10px;
+        }
+
+        .cat-pic {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .pr-title {
+            font-size: 26px;
+        }
+
+        .pr-price {
+            font-size: 36px;
+        }
+    }
+</style>
+
+    <script>
+        document.getElementsByTagName('body')[0], onkeydown = function(e) {
+                if (e.shiftKey && e.key == "!") {
+                    tv('tv1');
+                }
+                if (e.shiftKey && e.key == '@') {
+                    tv('tv2');
+                }
+                if (e.shiftKey && e.key == '#') {
+                    tv('tv3');
+                }
+                if (e.shiftKey && e.key == '$') {
+                    tv('varzesh');
+                }
+                if (e.shiftKey && e.key == '%') {
+                    showvid(1);
+                }
+                console.log(e.key);
+            }
+            // document.getElementsByTagName('html')[0].requestFullscreen();
+        document.fullscreenEnabled = true;
+        /*   var keyboardEvent = document.createEvent('KeyboardEvent');
+           var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? 'initKeyboardEvent' : 'initKeyEvent';
+
+           keyboardEvent[initMethod](
+               'keydown', // event type: keydown, keyup, keypress
+               true, // bubbles
+               true, // cancelable
+               window, // view: should be window
+               false, // ctrlKey
+               false, // altKey
+               false, // shiftKey
+               false, // metaKey
+               66, // keyCode: unsigned long - the virtual key code, else 0
+               0, // charCode: unsigned long - the Unicode character associated with the depressed key, else 0
+           );
+           document.dispatchEvent(keyboardEvent);*/
+
+
+
+
+
+
+
+
+        var ev = new KeyboardEvent('keydown', {
+            altKey: false,
+            bubbles: true,
+            cancelBubble: false,
+            cancelable: true,
+            charCode: 0,
+            code: "F11",
+            composed: true,
+            ctrlKey: false,
+            currentTarget: null,
+            defaultPrevented: true,
+            detail: 0,
+            eventPhase: 0,
+            isComposing: false,
+            isTrusted: true,
+            key: "F11",
+            keyCode: 122,
+            location: 0,
+            metaKey: false,
+            repeat: false,
+            returnValue: false,
+            shiftKey: false,
+            type: "keydown",
+            which: 122
+        });
+        setTimeout(function() {
+                document.dispatchEvent(ev);
+            }, 5000)
+            //  document.dispatchEvent(ev);
+    </script>
+</head>
+
+<body>
+
+    <video autoplay=true autoplay muted loop style="position: absolute;" class="back_vid">
+        <source src="pic/back.mov" >
+    </video>
+    <div class="back">
+        <img src="pic/logo.png" alt="لوگو" class="logoimg">
+        <div class="menu menu1" id="menu1">
+            <div class="cl-co co1">
+                <!--             برگر ها            -->
+                <div class="cat-contain">
+                    <div class="title-contain">
+                        <div class="title">
+                            BURGER
+                        </div>
+                        <div class="cat-pic" style="background-image: url(pic/burger.png);">
+
+                        </div>
+                    </div>
+                    <div class="prs-contain">
+
+                        <!--                    pr 1                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    مخصوص سکه طلا
+                                </div>
+                                <div class="pr-price">
+                                    155
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+                        <!--                    pr 2                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    بانی چیز برگر
+                                </div>
+                                <div class="pr-price">
+                                    150
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+                        <!--                    pr 3                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    ماشروم برگر
+                                </div>
+                                <div class="pr-price">
+                                    150
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+                        <!--                    pr 4                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    ویژه سکه طلا
+                                </div>
+                                <div class="pr-price">
+                                   155
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+                        <!--                    pr 5                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    ویژه با پنیر مخصوص
+                                </div>
+                                <div class="pr-price">
+                                    165
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+                        <!--                    pr 6                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    ویژه با بیکن
+                                </div>
+                                <div class="pr-price">
+                                    180
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+                        <!--                    pr 7                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    چیز برگر
+                                </div>
+                                <div class="pr-price">
+                                    140
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+
+            </div>
+            <!--               ردیف 2              -->
+            <div class="cl-co co2">
+                <!--            ساندویچ ها            -->
+                <div class="cat-contain">
+                    <div class="title-contain">
+                        <div class="title">
+                            snadwich
+                        </div>
+                        <div class="cat-pic" style="background-image: url(pic/sandwich.png);">
+
+                        </div>
+                    </div>
+                    <div class="prs-contain">
+
+                        <!--                    pr 1                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    ساندویچ رست بیف
+                                </div>
+                                <div class="pr-price">
+                                    205
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+                        <!--                    pr 2                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    ساندویچ استیک
+                                </div>
+                                <div class="pr-price">
+                                    205
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+                        <!--                    pr 3                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    ساندویچ زبان
+                                </div>
+                                <div class="pr-price">
+                                    210
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+                        <!--                    pr 4                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    ساندویچ بوقلمون
+                                </div>
+                                <div class="pr-price">
+                                    165
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+                        <!--                    pr 5                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    ساندویچ بیکن
+                                </div>
+                                <div class="pr-price">
+                                    165
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+                        <!--                    pr 6                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    فرانکفوتر سکه طلا
+                                </div>
+                                <div class="pr-price">
+                                    140
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+
+            </div>
+            <!--               ردیف 3              -->
+
+        </div>
+        <div class="menu menu2" id="menu2">
+            <div class="cl-co co1 ">
+                <!--            همبریان            -->
+                <div class="cat-contain">
+                    <div class="title-contain">
+
+                        <div class="cat-pic" style="background-image: url(pic/apptizer.png);">
+
+                        </div>
+                    </div>
+                    <div class="prs-contain">
+
+                        <!--                    pr 1                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    سیب زمینی
+                                </div>
+                                <div class="pr-price">
+                                    80
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="cl-co co2 ">
+                <div class="cat-contain">
+
+                    <div class="prs-contain">
+                        <!--                    pr 1                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    سالاد فصل
+                                </div>
+                                <div class="pr-price">
+                                    80
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="cl-co co3 ">
+                <!--            همبریان            -->
+                <div class="cat-contain">
+                    <div class="title-contain">
+
+                        <div class="cat-pic" style="background-image: url(pic/salad.png);">
+
+                        </div>
+                    </div>
+                    <div class="prs-contain">
+
+                        <!--                    pr 1                             -->
+                        <div class="pr">
+                            <div class="pr_up">
+                                <div class="pr-title">
+                                    سالاد مخصوص سکه طلا
+                                </div>
+                                <div class="pr-price">
+                                    155
+                                </div>
+                            </div>
+                            <div class="pr-desc">
+
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+
+</body>
+<script>
+    // function tv(chanel) {
+    //  setTimeout(tvf, 5000);
+    // setTimeout(tvf, 10000);
+    // setTimeout(tvf, 15000);
+    // setTimeout(tvf, 25000);
+    // iframe.onload = tvf();
+
+    //   }
+    function tv(chanel) {
+        document.getElementById('up').innerHTML = '<iframe id="iframe" onload="tvf()" src="https://telewebion.com/live/' + chanel + '" class="iframe"></iframe>';
+        var iframe = document.getElementById('iframe');
+        tvscr = 0;
+
+    }
+
+    function tvf() {
+        try {
+            iframe.contentWindow.document.getElementsByTagName('html')[0].style.overflow = "hidden";
+            tvstyle();
+        } catch (err) {
+            setTimeout(tvf, 300)
+        }
+    }
+
+    function tvstyle() {
+        try {
+            iframe.contentWindow.document.getElementById('video-player-container').style.width = "100%";
+            iframe.contentWindow.document.getElementById('video-player-container').style.position = "fixed";
+            iframe.contentWindow.document.getElementById('video-player-container').style.zIndex = 10000;
+            iframe.contentWindow.document.getElementsByTagName('header')[0].style.display = 'none';
+            iframe.contentWindow.document.getElementById('video-player-container').style.top = '0px';
+            iframe.contentWindow.document.getElementById('video-player-container').style.right = '0px';
+            tvmute();
+        } catch (err) {
+            setTimeout(tvstyle, 200);
+        }
+    }
+
+    function tvmute() {
+        try {
+            iframe.contentWindow.document.getElementById('video-container_html5_api').muted = true;
+            tvp();
+        } catch (err) {
+            setTimeout(tvmute, 300);
+        }
+    }
+
+    function tvp() {
+        try {
+            iframe.contentWindow.document.getElementById('video-container_html5_api').play();
+            // iframe.contentWindow.document.getElementsByClassName('vjs-poster')[0].click();
+            iframe.contentWindow.document.getElementsByClassName('vjs-poster')[0].onpause = function() {
+                alert('paused');
+            };
+            try {
+                tvsc();
+            } catch (err2) {
+                console.log(err2);
+            }
+        } catch (err) {
+            setTimeout(tvp, 100);
+        }
+    }
+    var tvscr = 0;
+
+    function tvsc() {
+        tvscr++;
+        if (tvscr < 60) {
+            try {
+                iframe.contentWindow.document.getElementsByClassName('vast-skip-button')[0].click();
+                setTimeout(tvsc, 500);
+            } catch (err) {
+                console.log('notskipes');
+                setTimeout(tvsc, 500);
+            }
+        }
+    }
+
+    function showvid(vidnum) {
+        if (vidnum <= 4) {
+            try {
+                document.getElementById('up').innerHTML = "<video class='vid' muted controls autoplay id='vid'><source src='video/" + vidnum + ".mp4'  type='video/mp4'></video>";
+
+                document.getElementById('vid').onended = function() {
+                    showvid(vidnum + 1);
+                };
+                vidplay();
+            } catch (err) {
+                showvid(1);
+            }
+        } else {
+            showvid(1);
+        }
+    }
+
+
+
+    function vidplay() {
+        document.getElementById('vid').play();
+    }
+    showvid(1);
+</script>
+
+</html>

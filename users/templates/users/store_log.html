@@ -211,6 +211,11 @@ $(document).ready(function () {
     
         <!-- Filter Form -->
         <form method="GET" class="row g-3 mb-4">
+
+            <div class="col-md-2">
+                <input type="text" name="receipt_number" class="form-control" placeholder="شماره رسید" value="{{ request.GET.receipt_number }}">
+            </div>
+
             <div class="col-md-2">
                 <select name="user" id="userDropdown" class="form-control">
                     <option value="">انتخاب کاربر</option>
