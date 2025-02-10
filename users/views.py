@@ -14,7 +14,7 @@ from users.utils.CalulatedDistance import calculate_distance
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 from django.views import generic
-from .models import AllowedLocation, Inventory, InventoryLog, Post,Tools,full_post,Profile
+from .models import AllowedLocation, CapturedImage, Inventory, InventoryLog, Post,Tools,full_post,Profile
 from django.shortcuts import get_object_or_404
 import numpy as np
 from django.http import HttpResponse
@@ -46,7 +46,8 @@ import time
 from persiantools.jdatetime import JalaliDate
 
 
-
+import base64
+from django.core.files.base import ContentFile
 
 from .models import RestaurantBranch,NightOrderRemainder
 
@@ -1217,7 +1218,7 @@ def add_store(request):
         
         data = dict(request.POST.dict())
         data.pop('csrfmiddlewaretoken','Not found')
-        
+
 
 
         if 'warehouse' in data.keys():
@@ -1227,7 +1228,7 @@ def add_store(request):
         else:
             return
         
-
+        
         if 'receipt_number' in data.keys():
             receipt_number = data['receipt_number']
             data.pop('receipt_number','Not found')
@@ -1235,6 +1236,46 @@ def add_store(request):
         else:
             return
         
+
+        image_data = request.POST.get('captured_image')
+        # print('image_data',image_data)
+        if image_data:
+            data.pop('captured_image','Not found')
+            try:
+
+
+                format, imgstr = image_data.split(';base64,') 
+                ext = format.split('/')[-1]  
+
+                # Fix padding issue
+                missing_padding = len(imgstr) % 4  
+                if missing_padding:  
+                    imgstr += '=' * (4 - missing_padding)  # Add missing padding  
+
+
+                # image = ContentFile(base64.b64decode(imgstr), name=f"receipt_image.{ext}")
+                # print('3')
+
+                
+                print(f'Format: {format}')  # Check the extracted format
+                print(f'Ext: {format.split("/")[-1]}')  # Check extension
+                print(f'First 50 chars of imgstr: {imgstr[:50]}')  # Check base64 content
+
+                try:
+                    # image = ContentFile(base64.b64decode(imgstr), name=f"receipt_image.{ext}")
+                    image = ContentFile(base64.urlsafe_b64decode(imgstr), name=f"receipt_image.{ext}")
+                    print("Image successfully created")
+                except Exception as e:
+                    print(f"Error: {e}")
+            
+                saved_image = CapturedImage.objects.create(image=image,receipt_number=receipt_number)  # Save to model
+                print('saved_image : ',saved_image)
+            except:
+                print('Error in save image')
+                pass
+                
+            
+        print('milaaaaaaaad')
 
 
 
@@ -1428,6 +1469,19 @@ def confrim_take_store(request):
 
 
 @login_required
+def product_store(request):
+
+    if request.method == "POST":
+        return
+
+
+
+
+
+
+
+
+@login_required
 def show_store(request):
 
         if request.method == "POST":
@@ -1582,8 +1636,13 @@ def log_view_store(request):
     warehouses = Warehouse.objects.all()
 
     receipt_number = request.GET.get('receipt_number')
-    receipt_number = int(receipt_number)
+
+    
     if receipt_number:
+        try:
+            receipt_number = int(receipt_number)
+        except:
+            pass
         logs = logs.filter(receipt_Number=receipt_number)
 
 

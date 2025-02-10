@@ -37,7 +37,7 @@ SECRET_KEY = str(os.getenv('SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['37.191.77.130','192.168.1.107','192.168.1.107','127.0.0.1','0.0.0.0','192.168.43.99','94.183.166.188','192.168.1.200']
+ALLOWED_HOSTS = ['37.191.77.130','192.168.1.107','172.20.10.4','127.0.0.1','0.0.0.0','192.168.43.99','94.183.166.188','192.168.1.200']
 
 
 
@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django_quill',
     'tinymce',
     'phone_field',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -152,7 +153,7 @@ STATIC_URL = 'static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-print('MEDIA_ROOT',MEDIA_ROOT)
+# print('MEDIA_ROOT',MEDIA_ROOT)
 
 
 # Define the directory where static files will be collected

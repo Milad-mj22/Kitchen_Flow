@@ -6,6 +6,46 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/store.css' %}">
 <script src="{% static 'js/all.min.js' %}"></script> <!-- Font Awesome for icons -->
 <html lang="fa" dir="rtl"></html>
+
+
+
+
+
+<style>
+
+
+.camera-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        video, img, canvas {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+        .btn-custom {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-custom:hover {
+            transform: scale(1.05);
+        }
+        .preview {
+            filter: blur(4px);
+            opacity: 0.7;
+        }
+
+
+</style>
+
+
 <script>
 
     function validateForm(event) {
@@ -186,6 +226,70 @@
 
 
 
+    let videoStream = null;
+    function openCamera() {
+    const video = document.getElementById('video');
+    const captureBtn = document.getElementById('capture-btn');
+    const constraints = {
+        video: {
+            facingMode: "environment", // استفاده از دوربین پشت
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+        }
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then(stream => {
+            video.srcObject = stream;
+            video.style.display = "block";
+            captureBtn.style.display = "block";
+        })
+        .catch(err => {
+            alert("عدم دسترسی به دوربین: " + err);
+        });
+}
+
+    function captureImage() {
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const capturedImage = document.getElementById('capturedImage');
+        // const submitBtn = document.getElementById('submit-btn');
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const imageData = canvas.toDataURL('image/png');
+        capturedImage.src = imageData;
+        capturedImage.style.display = "block";
+        video.style.display = "none";
+
+        document.getElementById('captured_image').value = imageData;
+        // submitBtn.style.display = "block";
+
+        if (videoStream) {
+            videoStream.getTracks().forEach(track => track.stop());
+            videoStream = null;
+        }
+    }
+
+
+
+
+
+    document.getElementById('cameraInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const img = document.getElementById('preview');
+                img.src = URL.createObjectURL(file);
+                img.style.display = "block";
+            }
+        });
+
+
+
+
 
 </script>
 
@@ -208,7 +312,7 @@
 
         <div class="mb-4 d-flex align-items-center" style="width: 100%;">
             <label for="receipt_number" class="form-label" style="flex: 0 0 150px; font-weight: bold; direction: rtl;">
-                شماره فیش
+                شماره فاکتور
             </label>
             <input type="text" id="receipt_number" name="receipt_number" class="form-control shadow-sm" style="flex: 1; direction: rtl; text-align: right;" required>
         </div>
@@ -261,10 +365,48 @@
             </select>
         </div>
 
+
+
+
+
+
+        <div class="camera-container">
+            <h4 class="mb-3">📷 Capture Image</h4>
+        
+            <!-- <form id="captureForm" action="upload.php" method="POST"> -->
+                <video id="video" autoplay style="display: none;"></video>
+                <canvas id="canvas" style="display: none;"></canvas>
+                <img id="capturedImage" src="" class="preview" style="display: none;">
+        
+                <input type="hidden" name="captured_image" id="captured_image">
+        
+                <button type="button" class="btn btn-primary btn-custom mb-2" onclick="openCamera()">🎥 Open Camera</button>
+                <button type="button" class="btn btn-success btn-custom mb-2" id="capture-btn" onclick="captureImage()" style="display: none;">📸 Capture Image</button>
+           
+            <!-- </form> -->
+        </div>
+
+
+
+<!-- 
+        <input type="file" accept="image/*" capture="environment" id="cameraInput">
+        <img id="preview" style="display:none; width: 100%; max-width: 400px; margin-top: 20px;">
+     -->
+
+
+
+
         <!-- Submit Button -->
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary btn-block" id="submit-btn" disabled>ثبت</button>
         </div>
+
+
+
+
+
+
+
     </form>
 </div>
 
