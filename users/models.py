@@ -311,6 +311,9 @@ class FoodRawMaterial(models.Model):
     mother = models.ForeignKey(mother_food, on_delete= models.CASCADE,related_name='mother_food_id',blank=True,null=True)
     name = models.CharField(max_length=200)
     data = models.JSONField(blank=True,null=True)
+    price = models.IntegerField(default=0,blank=True,null=True)
+    image = models.ImageField(upload_to='food_images/', blank=True, null=True)  # Added field for image
+    details = models.CharField(max_length=2000,default='',blank=True,null=True)
     
     def __str__(self):
         return str(self.name)

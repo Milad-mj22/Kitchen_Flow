@@ -32,6 +32,7 @@ urlpatterns = [
          name='password_reset_complete'),
 
     path('password-change/', ChangePasswordView.as_view(), name='password_change'),
+    path('menu/', include('menu.urls'), name='password_change'),
     path('', include('users.urls')),
 
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),

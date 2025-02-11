@@ -5,7 +5,9 @@ from .views import home, product_store, profile, RegisterView,tools \
         restaurant_food_list,add_restaurant,print_order,foodRawMaterials,addfoodrawmaterial,show_food_material,night_food_order,\
         show_flow,section1_view,section2_view,section3_view,section4_view,section5_view,load_temp,CustomLogoutView,add_store,success_page,\
         show_store,submit_data,show_test,take_store,confrim_take_store,log_view_store,\
-        register_entry,register_exit,get_allowed_locations,histoty_entry,update_prices
+        register_entry,register_exit,get_allowed_locations,histoty_entry,update_prices 
+
+        
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -77,6 +79,7 @@ urlpatterns = [
     path('submit-data/', submit_data, name='submit_data'),
     path('show_test/', show_test, name='submit_data'),
     #/////////////////////////
+
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
