@@ -314,14 +314,23 @@ class FoodRawMaterial(models.Model):
     price = models.IntegerField(default=0,blank=True,null=True)
     image = models.ImageField(upload_to='food_images/', blank=True, null=True)  # Added field for image
     details = models.CharField(max_length=2000,default='',blank=True,null=True)
-    
+    discount = models.DecimalField(max_digits=5, decimal_places=2, default=0, blank=True, null=True)  # Discount percentage
+
     def __str__(self):
         return str(self.name)
-    
+
+    def discounted_price(self):
+        """
+        Calculates the price after applying the discount.
+        If discount is set to 0, returns the original price.
+        """
+        if self.discount > 0:
+            discount_amount = (self.discount / 100) * self.price
+            return self.price - discount_amount
+        return self.price
+
     class Meta:
         ordering = ['-name']
-
-
 
 
 
