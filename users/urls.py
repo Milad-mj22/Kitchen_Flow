@@ -50,6 +50,7 @@ urlpatterns = [
     path('profile/create_material/', add_raw_material, name='add_material'),
     path('profile/create_mother_material/', add_mother_material, name='add_mother_material'),
     path('profile/night_order/', night_food_order, name='night_food_order'),
+    path('profile/night_order/null', night_food_order, name='night_food_order'),
     # path('tools/<slug:slug>/',PostDetail.as_view(), name='post_detail'),
     path('orders/edit_order/<int:id>', post_edit_quil, name='order-edit'),
     path('orders/show_order/<int:id>', show_order, name='order-show'),
@@ -62,7 +63,7 @@ urlpatterns = [
     path('profile/store_take_confirm/',confrim_take_store,name='add-store'),
     path('profile/store/',show_store,name='add-store'),
     path('profile/store_log/', log_view_store, name='logs_store'),
-    path('profile/store_product/', product_store, name='logs_store'),
+    path('profile/store_product/', product_store, name='product_store'),
     #////////////////////////////////////
 # profile/{{user.id}}/register_entry
     path('profile/<int:id>/register_entry/', register_entry, name='register_entry'),

@@ -1471,8 +1471,19 @@ def confrim_take_store(request):
 @login_required
 def product_store(request):
 
-    if request.method == "POST":
-        return
+    # if request.method == "POST":
+        # Loop over the data (assuming the names of fields match)
+        materials = []
+        for key, value in request.POST.items():
+            if key != 'csrfmiddlewaretoken':  # Skip CSRF token
+                try:
+                    quantity = float(value)
+                    if quantity > 0:
+                        materials.append({'name': key, 'quantity': quantity})
+                except ValueError:
+                    continue  # Ignore invalid values
+        
+        print(materials)
 
 
 
