@@ -1,11 +1,11 @@
 from django.urls import path
-from .views import home, product_store, profile, RegisterView,tools \
+from .views import home, profile, RegisterView,tools \
         ,my_orders,add_raw_material,post_edit_quil\
         ,create_order,add_mother_material,show_order,snapp,show_restaurant_list,\
         restaurant_food_list,add_restaurant,print_order,foodRawMaterials,addfoodrawmaterial,show_food_material,night_food_order,\
         show_flow,section1_view,section2_view,section3_view,section4_view,section5_view,load_temp,CustomLogoutView,add_store,success_page,\
         show_store,submit_data,show_test,take_store,confrim_take_store,log_view_store,\
-        register_entry,register_exit,get_allowed_locations,histoty_entry,update_prices 
+        register_entry,register_exit,get_allowed_locations,histoty_entry,update_prices, show_night_order_material
 
         
 
@@ -51,6 +51,7 @@ urlpatterns = [
     path('profile/create_mother_material/', add_mother_material, name='add_mother_material'),
     path('profile/night_order/', night_food_order, name='night_food_order'),
     path('profile/night_order/null', night_food_order, name='night_food_order'),
+    path('profile/show_night_order_material', show_night_order_material, name='show_night_order_material'),
     # path('tools/<slug:slug>/',PostDetail.as_view(), name='post_detail'),
     path('orders/edit_order/<int:id>', post_edit_quil, name='order-edit'),
     path('orders/show_order/<int:id>', show_order, name='order-show'),
@@ -63,7 +64,7 @@ urlpatterns = [
     path('profile/store_take_confirm/',confrim_take_store,name='add-store'),
     path('profile/store/',show_store,name='add-store'),
     path('profile/store_log/', log_view_store, name='logs_store'),
-    path('profile/store_product/', product_store, name='product_store'),
+    # path('profile/store_product/', product_store, name='product_store'),
     #////////////////////////////////////
 # profile/{{user.id}}/register_entry
     path('profile/<int:id>/register_entry/', register_entry, name='register_entry'),

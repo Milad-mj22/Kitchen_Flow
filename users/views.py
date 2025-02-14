@@ -979,6 +979,85 @@ def night_food_order(request):
 
 
 
+
+def show_night_order_material(request):
+
+
+
+        data = dict(request.POST.dict())
+        data.pop('csrfmiddlewaretoken','Not found')
+
+        materials_quantity = get_material_quantity(show_all=True)
+
+        raw_material={}
+        required_items = {}
+
+        for food_name,value in data.items():
+            # if value.isnumeric():
+                print(float(value))
+                if float(value)>0:
+                    data[food_name]=float(value)
+                    
+                    ret = FoodRawMaterial.objects.filter(name=food_name).first()
+
+                    if ret :
+                        for material in ret.data.keys():
+                            
+                            
+                            new_value = round(float(ret.data[material])*float(value),4)
+
+
+                            if material in raw_material.keys():
+
+                                raw_material[material]+=new_value
+                            
+                            else:
+                                raw_material[material]=new_value
+
+
+        items = {}
+
+
+        for rw , value in raw_material.items():
+
+            material = materials_quantity.get(name = rw)
+            if material:
+        
+                quantity =float(Decimal(material.total_quantity))
+
+
+                items[rw] = {
+                    'required': value,
+                    'available': quantity,
+                    'exist': quantity >= value
+                }
+
+            # if quantity<value:
+
+            #     material['exist']=False
+
+
+
+                # if rw in list(required_items.keys()): 
+
+                #     required_items[rw] =round(value - quantity + required_items[rw],3)
+                # else:
+                #     required_items[rw] =round(value - quantity,3)
+
+
+
+        return render(request, 'users/reqiured_items.html', {'items': items})
+
+
+
+
+
+
+
+
+
+
+
 def calculateProducibleMeals():
 
     # mother_materials = MotherFood.objects.prefetch_related('mother_food_id').all()
@@ -1468,22 +1547,6 @@ def confrim_take_store(request):
 
 
 
-@login_required
-def product_store(request):
-
-    # if request.method == "POST":
-        # Loop over the data (assuming the names of fields match)
-        materials = []
-        for key, value in request.POST.items():
-            if key != 'csrfmiddlewaretoken':  # Skip CSRF token
-                try:
-                    quantity = float(value)
-                    if quantity > 0:
-                        materials.append({'name': key, 'quantity': quantity})
-                except ValueError:
-                    continue  # Ignore invalid values
-        
-        print(materials)
 
 
 
