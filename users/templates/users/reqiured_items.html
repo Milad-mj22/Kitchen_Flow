@@ -82,9 +82,8 @@
                 <thead class="table-dark">
                     <tr>
                         <th>ماده اولیه</th>
-                        <th>درخواستی</th>
-                        <th>موجود</th>
-                        <th>وضعیت</th>
+                        <th>مورد نیاز</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -92,6 +91,10 @@
                     <tr>
                         <td>{{ item}}</td>
                         <td>{{ quantity }}</td>
+                                                <td>{{ info.available }}</td>
+                        <td style="color: {% if info.exist %}green{% else %}red{% endif %}">
+                            {% if info.exist %}موجود{% else %}ناکافی{% endif %}
+                        </td>
                     </tr>
                     {% endfor %} -->
 
@@ -100,14 +103,11 @@
 
 
 
-                    {% for material, info in items.items %}
+                    {% for material, info in required_items.items %}
                     <tr>
                         <td>{{ material }}</td>
-                        <td>{{ info.required }}</td>
-                        <td>{{ info.available }}</td>
-                        <td style="color: {% if info.exist %}green{% else %}red{% endif %}">
-                            {% if info.exist %}موجود{% else %}ناکافی{% endif %}
-                        </td>
+                        <td>{{ info }}</td>
+
                     </tr>
                     {% endfor %}
 

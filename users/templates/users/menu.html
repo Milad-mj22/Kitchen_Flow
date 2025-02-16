@@ -132,7 +132,19 @@ body {
 
 
 
-
+.sold-out {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: red;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+    transform: rotate(-10deg);
+}
 
 
 
@@ -185,6 +197,9 @@ body {
     <div class="logo-container">
         <img src="{% static 'pic/logo.png' %}" alt="لوگو" class="logoimg">
     </div>
+
+    <form id="soldOutForm" method="POST">
+        {% csrf_token %}
     
     <!-- <div class="menu"> -->
         <div class="main-container">
@@ -192,7 +207,10 @@ body {
             <div class="co1">
               
                 {% for product in pizza_single %}
-                <div class="pr">
+                <div class="pr" style="position: relative;">
+                    {% if product.sold_out %}
+                        <span class="sold-out">ناموجود</span>
+                    {% endif %}
                     {% if product.image %}
                         <img src="{{ product.image.url }}" alt="{{ product.name }} Icon" class="food-icon">
                     {% else %}
@@ -212,7 +230,6 @@ body {
                                 {% endif %}
                             </span>
                         </div>
-
                         <div class="pr-desc">{{ product.details }}</div>
                     </div>
                 </div>
@@ -251,6 +268,7 @@ body {
             </div>
         </div>
     <!-- </div> -->
+    </form>
 </body>
 
 </html>
@@ -307,4 +325,94 @@ body {
     hoverNextItem();
 };
     
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const soldOutForm = document.querySelector("#soldOutForm");
+
+        if (soldOutForm) {
+            soldOutForm.addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                let formData = new FormData(this);  // Get the form data
+
+                // Send an AJAX POST request
+                fetch("{% url 'set_sold_out' %}", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",  // Set the header to identify as an AJAX request
+                        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value // CSRF token
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Update the menu by adding a "Sold Out" label to the product
+                        const soldOutProductId = data.sold_out_item_id;
+
+                        // Find the product element and add "Sold Out" text (You may need to customize the selector)
+                        const productElement = document.querySelector(`#product-${soldOutProductId}`);
+                        if (productElement) {
+                            const soldOutLabel = document.createElement("span");
+                            soldOutLabel.textContent = "Sold Out";
+                            soldOutLabel.style.color = "red";
+                            soldOutLabel.style.fontWeight = "bold";
+                            productElement.appendChild(soldOutLabel);  // Add the Sold Out label to the product
+                        }
+                    } else {
+                        alert(data.message || "Error occurred");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Something went wrong.");
+                });
+            });
+        }
+    });
+</script>
+
+
+
+<script>
+var socket = new WebSocket("ws://" + window.location.host + "/ws/menu_updates/");
+
+socket.onmessage = function(event) {
+    var data = JSON.parse(event.data);
+    console.log("WebSocket message received:", data.menu_status);
+  
+    let soldOutProductName = data.menu_status.name; // Extract the product name
+
+    console.log("soldOutProductName:", soldOutProductName);
+
+
+    // Find all product elements
+    let productElements = document.querySelectorAll(".pr");
+
+    productElements.forEach(product => {
+        let productTitle = product.querySelector(".pr-title");
+
+        if (productTitle && productTitle.textContent.trim() === soldOutProductName) {
+            // Mark as Sold Out
+            product.style.opacity = "0.5"; // Dim the item
+            product.style.pointerEvents = "none"; // Disable interactions
+
+            let soldOutText = document.createElement("span");
+            soldOutText.textContent = " ناموجود " ;
+            soldOutText.style.color = "red";
+            soldOutText.style.fontWeight = "bold";
+            soldOutText.style.marginRight = "10px";
+
+            // Append "Sold Out" text if it doesn't already exist
+            if (!product.querySelector(".sold-out-text")) {
+                soldOutText.classList.add("sold-out-text");
+                productTitle.appendChild(soldOutText);
+            }
+        }
+    });
+};
+
 </script>

@@ -825,13 +825,6 @@ def show_food_material(request,id):
 
   
     else:
-        # mother_materials = MotherMaterial.objects.prefetch_related('mother_material').order_by('describe').all()
-        # mother_materials = MotherMaterial.objects.prefetch_related(
-        #                                 models.Prefetch(
-        #                                     'mother_material',  # The related name of raw_material in mother_material
-        #                                     queryset=raw_material.objects.order_by('describe').reverse()  # Sorting submaterials by 'describe' in ascending order
-        #                                 )
-        #                             ).order_by('describe').all()
 
 
 
@@ -847,16 +840,6 @@ def show_food_material(request,id):
             submaterials = mother_material.mother_material.all()
             for submaterial in submaterials :
                 print(submaterial)
-
-
-
-        # mother_materials = MotherMaterial.objects.prefetch_related(
-        #     Prefetch(
-        #         'mother_material',  # Use the correct related_name for RawMaterial in MotherMaterial
-        #         queryset=RawMaterial.objects.filter(total_quantity__gt=0).order_by('describe')  # Filtering non-zero items and sorting
-        #     )
-        # ).order_by('describe')
-
 
 
 
@@ -925,11 +908,6 @@ def night_food_order(request):
 
         ret , status = ModelCreateOrder.objects.update_or_create(author = request.user , content = raw_material, night_order = data )
 
-
-        # if form.is_valid():
-            # obj =form.save(commit=False)
-            # obj.author = User.objects.get(pk=request.user.id)
-            # form.save()
         if status:
             messages.success(request,'New Forum Successfully Added')
 
@@ -967,12 +945,6 @@ def night_food_order(request):
 
             mother_food.producible_quantity = total                 
 
-            # if food_name in producible_foods.keys():
-
-            #     mother_material.producible_quantity = producible_food_names[food_name]
-
-
-
 
         return render(request, 'users/night_order.html', {'mother_foods': mother_foods})
     
@@ -991,6 +963,7 @@ def show_night_order_material(request):
 
         raw_material={}
         required_items = {}
+        foods = {}
 
         for food_name,value in data.items():
             # if value.isnumeric():
@@ -1001,6 +974,10 @@ def show_night_order_material(request):
                     ret = FoodRawMaterial.objects.filter(name=food_name).first()
 
                     if ret :
+
+                        foods[food_name] = {
+                            'value': value,
+                        }
                         for material in ret.data.keys():
                             
                             
@@ -1010,9 +987,12 @@ def show_night_order_material(request):
                             if material in raw_material.keys():
 
                                 raw_material[material]+=new_value
+                                # raw_material[material] = round(raw_material[material],4)
                             
                             else:
                                 raw_material[material]=new_value
+                                # raw_material[material] = round(raw_material[material],4)
+
 
 
         items = {}
@@ -1024,29 +1004,18 @@ def show_night_order_material(request):
             if material:
         
                 quantity =float(Decimal(material.total_quantity))
-
-
+                quantity = round(quantity,4)
+                value = round(value,4)
                 items[rw] = {
                     'required': value,
                     'available': quantity,
                     'exist': quantity >= value
                 }
 
-            # if quantity<value:
-
-            #     material['exist']=False
 
 
 
-                # if rw in list(required_items.keys()): 
-
-                #     required_items[rw] =round(value - quantity + required_items[rw],3)
-                # else:
-                #     required_items[rw] =round(value - quantity,3)
-
-
-
-        return render(request, 'users/reqiured_items.html', {'items': items})
+        return render(request, 'users/show_night_order_material.html', {'items': items , 'foods':foods})
 
 
 
@@ -1101,31 +1070,6 @@ def calculateProducibleMeals():
     print(producible_foods)
 
     return producible_foods
-
-        #     required_quantity = material.required_quantity
-
-
-
-
-    # Get all food recipes with their required raw materials
-    # foods = FoodRawMaterial.objects.all()
-
-    # # Iterate through each food recipe
-    # for food in foods:
-    #     can_make = True
-        
-    #     # Check if all required materials are available in sufficient quantities
-    #     for material in food.raw_materials.all():
-    #         required_quantity = material.required_quantity
-    #         available_quantity = materials.get(material.id, 0)
-
-    #         if available_quantity < required_quantity:
-    #             can_make = False
-    #             break
-        
-    #     if can_make:
-    #         producible_foods.append(food)
-
 
 
 

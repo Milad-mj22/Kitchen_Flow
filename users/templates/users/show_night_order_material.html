@@ -73,23 +73,33 @@
 
 <div class="container">
     <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
-        <h1 class="page-title">مواد اولیه کسری</h1>
+        <h1 class="page-title">مواد اولیه</h1>
     </div>
     <div class="container mt-4">
         <div class="card shadow-lg rounded-lg p-4 mb-4">
        
+
+
+
+
+
+
+
+
             <table class="table table-bordered table-hover">
                 <thead class="table-dark">
                     <tr>
-                        <th>ماده اولیه</th>
-                        <th>مقدار</th>
+                        <th>نام غذا</th>
+                        <th>درخواستی</th>
+
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item,quantity in required_items.items %}
+                    {% for food_name,info in foods.items %}
                     <tr>
-                        <td>{{ item}}</td>
-                        <td>{{ quantity }}</td>
+                        <td>{{ food_name }}</td>
+                        <td>{{ info.value }}</td>
+                        
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -97,13 +107,53 @@
 
 
 
-            <div class="text-center">
-                <div class="button-group">
-                    <a href="javascript:void(0);" class="btn btn-primary custom-btn disabled-link" aria-disabled="true">ویرایش &rarr;</a>
 
-                  <a href="/orders/print_order/{{ order.id }}" class="btn btn-primary custom-btn">ارسال به مسئول خرید &rarr;</a>
+
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ماده اولیه</th>
+                        <th>درخواستی</th>
+                        <th>موجود</th>
+                        <th>وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for material, info in items.items %}
+                    <tr>
+                        <td>{{ material }}</td>
+                        <td>{{ info.required }}</td>
+                        <td>{{ info.available }}</td>
+                        <td style="color: {% if info.exist %}green{% else %}red{% endif %}">
+                            {% if info.exist %}موجود{% else %}ناکافی{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+
+
+
+
+
+            <form method="POST" action="{% url 'show_night_order_material_submit' %}">
+                {% csrf_token %}
+                
+                {% for food_name, info in foods.items %}
+                    <input type="hidden" name="{{ food_name }}" value="{{ info.value }}">
+                {% endfor %}
+            
+                <div class="text-center">
+                    <div class="button-group">
+                        <a href="javascript:void(0);" class="btn btn-primary custom-btn disabled-link" aria-disabled="true">ویرایش &rarr;</a>
+                        <button type="submit" class="btn btn-primary custom-btn">ثبت &rarr;</button>
+                    </div>
                 </div>
-              </div>
+            </form>
+
+
 
 
 

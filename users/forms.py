@@ -294,3 +294,11 @@ class EntryExitLogForm(forms.ModelForm):
         widgets = {
             'timestamp': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
+
+
+
+
+
+
+
+

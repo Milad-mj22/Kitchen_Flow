@@ -387,12 +387,12 @@ class Inventory(models.Model):
         self.save()
         InventoryLog.objects.create(inventory=self, change_type='ADD', amount=amount,user=user,receipt_Number = self.receipt_Number)
 
-    def remove_stock(self, amount,user,receipt_number):
+    def remove_stock(self, amount,user):
         """برداشتن کالا از انبار و ایجاد لاگ به‌طور خودکار"""
         if self.quantity >= amount:
             self.quantity -= amount
             self.last_updated = timezone.now()
-            self.receipt_Number = receipt_number  # ذخیره شماره فیش
+            self.receipt_Number = -123  # ذخیره شماره فیش
             self.save()
             InventoryLog.objects.create(inventory=self, change_type='REMOVE', amount=amount,user=user,receipt_Number = self.receipt_Number)
             return True , 'مقادیر مورد نظر با موفقیت حذف گردید'
@@ -436,6 +436,10 @@ class RestaurantBranch(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
+
 
 
 

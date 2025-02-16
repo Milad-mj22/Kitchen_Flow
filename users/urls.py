@@ -52,6 +52,7 @@ urlpatterns = [
     path('profile/night_order/', night_food_order, name='night_food_order'),
     path('profile/night_order/null', night_food_order, name='night_food_order'),
     path('profile/show_night_order_material', show_night_order_material, name='show_night_order_material'),
+    path('profile/show_night_order_material/submit', night_food_order, name='show_night_order_material_submit'),
     # path('tools/<slug:slug>/',PostDetail.as_view(), name='post_detail'),
     path('orders/edit_order/<int:id>', post_edit_quil, name='order-edit'),
     path('orders/show_order/<int:id>', show_order, name='order-show'),

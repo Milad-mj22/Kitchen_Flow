@@ -45,6 +45,8 @@ ALLOWED_HOSTS = ['37.191.77.130','192.168.1.107','172.20.10.4','127.0.0.1','0.0.
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,6 +59,7 @@ INSTALLED_APPS = [
     'tinymce',
     'phone_field',
     'django_extensions',
+    'menu'
 ]
 
 MIDDLEWARE = [
@@ -93,7 +96,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'user_management.wsgi.application'
-
+ASGI_APPLICATION = 'user_management.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -188,3 +191,12 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
+
+
+
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}

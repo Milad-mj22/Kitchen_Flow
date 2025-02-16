@@ -125,7 +125,13 @@
 
         <div class="text-center mt-4">
             <!-- Pass the URL dynamically as a data attribute -->
-            <button type="button" class="btn btn-primary" data-action="{% url 'show_night_order_material' %}" onclick="handleSubmit(event)">نمایش اقلام</button>
+             
+            <button type="button" class="btn btn-primary" 
+            data-action="{% url 'show_night_order_material' %}" 
+            onclick="handleSubmit(event)" 
+            style="background: linear-gradient(135deg, #fffde7, #F7D141); border: none; color: black;">
+        نمایش اقلام
+    </button>
             <button type="submit" class="btn btn-success btn-block">ثبت</button>
         </div>
     </form>
