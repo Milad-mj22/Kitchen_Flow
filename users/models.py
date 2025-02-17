@@ -524,7 +524,20 @@ class CapturedImage(models.Model):
 class MaterialComposition(models.Model):
     main_material = models.ForeignKey(raw_material, on_delete=models.CASCADE, related_name='components')  # ماده اصلی
     ingredient = models.ForeignKey(raw_material, on_delete=models.CASCADE, related_name='used_in')  # ماده تشکیل‌دهنده
-    quantity = models.FloatField(default=1.0)  # مقدار مصرفی در هر واحد از ماده اصلی
+    ratio = models.FloatField(default=1.0)  # مقدار مصرفی در هر واحد از ماده اصلی
+    has_discard = models.BooleanField(default=False)  # آیا این ماده دارای ضایعات است؟
 
     def __str__(self):
-        return f"{self.ingredient.name} in {self.main_material.name} "
+        discard_status = " (Discarded)" if self.has_discard else ""
+        return f"{self.ingredient.name} in {self.main_material.name}{discard_status}"
+
+
+class ProductionLog(models.Model):
+    product = models.ForeignKey(MaterialComposition, on_delete=models.CASCADE, related_name='production_logs')  # محصولی که تولید شده
+    produced_quantity = models.DecimalField(max_digits=10, decimal_places=2)  # تعداد واحدهای تولید شده
+    discarded_quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # مقدار ضایعات
+    date = models.DateTimeField(default=timezone.now)  # تاریخ تولید
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='production_logs')  # کاربری که این عملیات را ثبت کرده است
+
+    def __str__(self):
+        return f"{self.product.name} - تولید: {self.produced_quantity} - ضایعات: {self.discarded_quantity}"

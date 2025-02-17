@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, material_composition_view, profile, RegisterView,tools \
+from .views import error_page, home, material_composition_view, profile, RegisterView,tools \
         ,my_orders,add_raw_material,post_edit_quil\
         ,create_order,add_mother_material,show_order,snapp,show_restaurant_list,\
         restaurant_food_list,add_restaurant,print_order,foodRawMaterials,addfoodrawmaterial,show_food_material,night_food_order,\
@@ -79,6 +79,7 @@ urlpatterns = [
 
 
     path('success/', success_page, name='success_page'),  # URL for success page
+    path('error/', error_page, name='error_page'),  # URL for error page
     path('submit-warehouse/', show_store, name='submit-warehouse'),
     path('submit-data/', submit_data, name='submit_data'),
     path('show_test/', show_test, name='submit_data'),

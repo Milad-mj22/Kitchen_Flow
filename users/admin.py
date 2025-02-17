@@ -5,7 +5,7 @@ from .models import Location, Profile
 from .models import Tools,Post,Tools,Post_quill , jobs , Projects ,raw_material,create_order\
                     ,mother_material,FoodFilter,SnappFoodList,cities,FoodRawMaterial,mother_food,mode_raw_materials,\
                     Inventory,InventoryLog,Warehouse,RestaurantBranch,NightOrderRemainder,AllowedLocation,\
-                    EntryExitLog,CapturedImage,MaterialComposition
+                    EntryExitLog,CapturedImage,MaterialComposition,ProductionLog
 
 
 
@@ -38,6 +38,7 @@ admin.site.register(mother_food)
 admin.site.register(mode_raw_materials)
 admin.site.register(CapturedImage)
 admin.site.register(MaterialComposition)
+admin.site.register(ProductionLog)
 # admin.site.register(mode_raw_materials)
 # admin.site.register(Inventory)
 

@@ -1371,6 +1371,66 @@ def material_composition_view(request):
 
 
 
+    if request.method == 'POST':
+
+        main_materials = MaterialComposition.objects.values_list("main_material__name", flat=True).distinct()
+
+
+
+        data = dict(request.POST.dict())
+        data.pop('csrfmiddlewaretoken','Not found')
+
+
+
+        if 'warehouse' in data.keys():
+            ware_house = data['warehouse']
+            data.pop('warehouse','Not found')
+
+        else:
+            return
+
+
+        profile = Profile.objects.get(id = request.user.id)
+        ware_house = Warehouse.objects.get(id = ware_house)
+
+
+
+
+        
+        for key , value in data.items():
+            discard=False
+            if float(value)>0:
+
+                if key not in main_materials:
+
+                    print('Remove :',key , 'value : ',value)
+                    decimal_value = Decimal(value)
+                    raw_material_instance = raw_material.objects.get(name=key)
+                    inventory, created = Inventory.objects.get_or_create(inventory_raw_material=raw_material_instance,warehouse=ware_house)
+                    status,message = inventory.remove_stock(amount=decimal_value,user=profile)
+                    print(status,message)
+
+                    if not status:
+                        return redirect('error_page')
+                
+                    
+
+
+                else:
+
+
+                    print('ADD: ',key , 'value : ',value)
+                    receipt_number = '{}'.format(9000)
+                    decimal_value = Decimal(value)
+                    raw_material_instance = raw_material.objects.get(name=key)
+                    inventory, created = Inventory.objects.get_or_create(inventory_raw_material=raw_material_instance,warehouse=ware_house)
+                    inventory.add_stock(amount=decimal_value,user=profile,receipt_number=receipt_number)
+
+                        
+
+        return redirect('success_page')  # Redirect to a success page
+    
+
 
     materials = raw_material.objects.all()
     
@@ -1389,10 +1449,12 @@ def material_composition_view(request):
 
 
                 dic = {"name": composition.ingredient.name,
-                        "ratio": composition.quantity ,
+                        "ratio": composition.ratio ,
                           "quantity":get_total_quantity(composition.ingredient),
                           "id":composition.ingredient.id,
-                          "unit":composition.ingredient.unit} 
+                          "unit":composition.ingredient.unit,
+                          "has_discard" : composition.has_discard,
+                          } 
                 
                 ingredients_list.append(dic)
 
@@ -1403,30 +1465,14 @@ def material_composition_view(request):
             materials_with_ingredients.append({
                 "main_material": material.name,
                 "ingredients": ingredients_list,
-                "id":material.id
+                "id":material.id,
+                "unit":material.unit,
+                # "has_discard" : material.
             })
+
+    ware_houses = Warehouse.objects.all()
         
-    context = {"materials_with_ingredients": materials_with_ingredients}
-
-
-
-
-
-
-
-    ingredients = MaterialComposition.objects.all()  # Get all ingredients
-    if request.method == 'POST':
-        # Process the form submission
-        for ingredient in ingredients:
-            quantity = request.POST.get(f'quantity_{ingredient.id}')
-            # Save or update the quantity for this ingredient
-            # MaterialComposition.objects.create(
-            #     main_material=your_main_material,  # Replace with your main material
-            #     ingredient=ingredient,
-            #     quantity=quantity
-            # )
-        return redirect('success_url')  # Redirect to a success page
-    
+    context = {"materials_with_ingredients": materials_with_ingredients,'warehouses':ware_houses}
     return render(request, 'users/store_product.html',context)
 
 
@@ -2013,6 +2059,10 @@ def update_prices(request,city,res_name):
 
 def success_page(request):
     return render(request, 'users/success_page.html')  # Render your success page template
+
+def error_page(request):
+    return render(request, 'users/error_page.html')  # Render your success page template
+
 
 
 

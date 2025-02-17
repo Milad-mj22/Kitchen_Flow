@@ -47,7 +47,6 @@
 
 </style>
 
-
 <script>
 
     function validateForm(event) {
@@ -228,72 +227,11 @@
 
 
 
-    let videoStream = null;
-    function openCamera() {
-    const video = document.getElementById('video');
-    const captureBtn = document.getElementById('capture-btn');
-    const constraints = {
-        video: {
-            facingMode: "environment", // استفاده از دوربین پشت
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-        }
-    };
-
-    navigator.mediaDevices.getUserMedia(constraints)
-        .then(stream => {
-            video.srcObject = stream;
-            video.style.display = "block";
-            captureBtn.style.display = "block";
-        })
-        .catch(err => {
-            alert("عدم دسترسی به دوربین: " + err);
-        });
-}
-
-    function captureImage() {
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const context = canvas.getContext('2d');
-        const capturedImage = document.getElementById('capturedImage');
-        // const submitBtn = document.getElementById('submit-btn');
-
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        const imageData = canvas.toDataURL('image/png');
-        capturedImage.src = imageData;
-        capturedImage.style.display = "block";
-        video.style.display = "none";
-
-        document.getElementById('captured_image').value = imageData;
-        // submitBtn.style.display = "block";
-
-        if (videoStream) {
-            videoStream.getTracks().forEach(track => track.stop());
-            videoStream = null;
-        }
-    }
-
-
-
-
-
-    document.getElementById('cameraInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const img = document.getElementById('preview');
-                img.src = URL.createObjectURL(file);
-                img.style.display = "block";
-            }
-        });
-
-
 
 
 
 </script>
+
 
 
 <div class="container">
@@ -309,7 +247,7 @@
         </button>
     </div>
 
-    <form method="post" onsubmit="return handleSubmit(event) && validateForm(event)">>
+    <form method="post" onsubmit="return handleSubmit(event)">>
         {% csrf_token %}
 
 
@@ -319,6 +257,7 @@
                 <div class="card">
                     <a href="javascript:void(0);" onclick="toggleSubmaterials('submaterials-{{ mother_material.id }}')">
                         {{ mother_material.main_material }} 
+                        
                     </a>
                     <div id="submaterials-{{ mother_material.id }}" class="submaterials" style="display: none;">
                         {% for field in mother_material.ingredients %}
@@ -337,21 +276,63 @@
                                         </h5>
 
                                         <div class="input-wrapper">
+                                            {% if field.has_discard %}
+                                            ناخالص : 
+                                            {% endif %}
+
+                          
                                             <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field.id }}_input', -1)">-</button>
                                             <input class="form-control digit-input" type="text" step="1" id="{{ field.id }}_input" name="{{ field.name }}" value="0">
                                             <button type="button" class="btn btn-increment" onclick="changeValue('{{ field.id }}_input', 1)">+</button>
                                             <div class="input-group-append">
                                                 <span class="input-group-text">{{ field.unit }}</span>
                                             </div>
+
+
+                               
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         {% endfor %}
+
+                        <div class="input-wrapper">
+
+
+                        تولید شده :
+                        <button type="button" class="btn btn-decrement" onclick="changeValue('{{ mother_material.id }}_input', -1)">-</button>
+                        <input class="form-control digit-input" type="text" step="1" id="{{ mother_material.id }}_input" name="{{ mother_material.main_material }}" value="0">
+                        <button type="button" class="btn btn-increment" onclick="changeValue('{{ mother_material.id }}_input', 1)">+</button>
+                        <div class="input-group-append">
+                            <span class="input-group-text">{{ mother_material.unit }}</span>
+                        </div>
+                        </div>
+
+
+
+
+
                     </div>
                 </div>
             {% endfor %}
         </div>
+
+
+
+        <!-- Warehouse Dropdown -->
+        <div class="mb-4 d-flex align-items-center" style="width: 100%;">
+            <label for="warehouse" class="form-label" style="flex: 0 0 150px; font-weight: bold; direction: rtl;">
+                انتخاب انبار
+            </label>
+            <select id="warehouse" name="warehouse" class="form-select shadow-sm" style="flex: 1; direction: rtl; text-align: right;" onchange="enableSubmitButton()">
+                <option value="" disabled selected>انتخاب انبار...</option>
+                {% for warehouse in warehouses %}
+                    <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
 
 
 

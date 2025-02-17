@@ -309,7 +309,7 @@ class EntryExitLogForm(forms.ModelForm):
 class MaterialCompositionForm(forms.ModelForm):
     class Meta:
         model = MaterialComposition
-        fields = ['main_material', 'ingredient', 'quantity']
+        fields = ['main_material', 'ingredient', 'ratio']
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
