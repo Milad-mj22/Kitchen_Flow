@@ -14,7 +14,7 @@ from users.utils.CalulatedDistance import calculate_distance
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 from django.views import generic
-from .models import AllowedLocation, CapturedImage, Inventory, InventoryLog, Post,Tools,full_post,Profile
+from .models import AllowedLocation, CapturedImage, Inventory, InventoryLog, MaterialComposition, Post,Tools,full_post,Profile
 from django.shortcuts import get_object_or_404
 import numpy as np
 from django.http import HttpResponse
@@ -1337,6 +1337,98 @@ def add_store(request):
  
         return render(request, 'users/store_add.html', {'mother_materials': mother_materials,'warehouses':ware_houses})
     
+
+
+
+from .forms import MaterialCompositionForm
+
+def material_composition_view(request):
+    if request.method == 'POST':
+        form = MaterialCompositionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('success_url')  # Redirect to a success page
+    else:
+        form = MaterialCompositionForm()
+    
+    return render(request, 'material_composition.html', {'form': form})
+
+
+
+
+def get_total_quantity(material):
+    total = Inventory.objects.filter(inventory_raw_material=material).aggregate(Sum('quantity'))['quantity__sum']
+    return total or 0  # اگر مقدار None بود، 0 برگردانید
+
+
+
+
+
+
+
+# views.py
+def material_composition_view(request):
+
+
+
+
+    materials = raw_material.objects.all()
+    
+    # Create a list of dictionaries containing main materials and their ingredients
+    materials_with_ingredients = []
+    
+    for material in materials:
+        ingredients = material.components.all()  # Get related ingredients
+        if ingredients.exists():
+        
+
+
+            ingredients_list=[]
+
+            for composition in ingredients:
+
+
+                dic = {"name": composition.ingredient.name,
+                        "ratio": composition.quantity ,
+                          "quantity":get_total_quantity(composition.ingredient),
+                          "id":composition.ingredient.id,
+                          "unit":composition.ingredient.unit} 
+                
+                ingredients_list.append(dic)
+
+
+
+
+            
+            materials_with_ingredients.append({
+                "main_material": material.name,
+                "ingredients": ingredients_list,
+                "id":material.id
+            })
+        
+    context = {"materials_with_ingredients": materials_with_ingredients}
+
+
+
+
+
+
+
+    ingredients = MaterialComposition.objects.all()  # Get all ingredients
+    if request.method == 'POST':
+        # Process the form submission
+        for ingredient in ingredients:
+            quantity = request.POST.get(f'quantity_{ingredient.id}')
+            # Save or update the quantity for this ingredient
+            # MaterialComposition.objects.create(
+            #     main_material=your_main_material,  # Replace with your main material
+            #     ingredient=ingredient,
+            #     quantity=quantity
+            # )
+        return redirect('success_url')  # Redirect to a success page
+    
+    return render(request, 'users/store_product.html',context)
+
 
 
 

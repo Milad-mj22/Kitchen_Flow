@@ -516,3 +516,15 @@ class CapturedImage(models.Model):
 
     def __str__(self):
         return f"Image {self.id} - {self.image.url}"
+    
+
+
+
+
+class MaterialComposition(models.Model):
+    main_material = models.ForeignKey(raw_material, on_delete=models.CASCADE, related_name='components')  # ماده اصلی
+    ingredient = models.ForeignKey(raw_material, on_delete=models.CASCADE, related_name='used_in')  # ماده تشکیل‌دهنده
+    quantity = models.FloatField(default=1.0)  # مقدار مصرفی در هر واحد از ماده اصلی
+
+    def __str__(self):
+        return f"{self.ingredient.name} in {self.main_material.name} "

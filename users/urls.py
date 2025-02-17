@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, profile, RegisterView,tools \
+from .views import home, material_composition_view, profile, RegisterView,tools \
         ,my_orders,add_raw_material,post_edit_quil\
         ,create_order,add_mother_material,show_order,snapp,show_restaurant_list,\
         restaurant_food_list,add_restaurant,print_order,foodRawMaterials,addfoodrawmaterial,show_food_material,night_food_order,\
@@ -61,6 +61,7 @@ urlpatterns = [
 
     ################### STORE
     path('profile/store_add/',add_store,name='add-store'),
+    path('profile/store_product/',material_composition_view,name='product-store'),
     path('profile/store_take/',take_store,name='add-store'),
     path('profile/store_take_confirm/',confrim_take_store,name='add-store'),
     path('profile/store/',show_store,name='add-store'),

@@ -10,7 +10,9 @@ from .models import QuillPost , full_post , raw_material , mother_material
 from django import forms
 from django_quill.forms import QuillFormField
 from django import forms
-
+# forms.py
+from django import forms
+from .models import MaterialComposition
 
 class RegisterForm(UserCreationForm):
     # fields we want to include and customize in our form
@@ -302,3 +304,14 @@ class EntryExitLogForm(forms.ModelForm):
 
 
 
+
+
+class MaterialCompositionForm(forms.ModelForm):
+    class Meta:
+        model = MaterialComposition
+        fields = ['main_material', 'ingredient', 'quantity']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Dynamic fields based on ingredients, for example:
+        self.fields['ingredient'].queryset = raw_material.objects.all()  # Populate ingredient choices
