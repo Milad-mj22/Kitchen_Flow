@@ -381,12 +381,15 @@ class Inventory(models.Model):
 
     def add_stock(self, amount,user,receipt_number):
         """افزودن کالا به انبار و ایجاد لاگ به‌طور خودکار"""
-        self.quantity += amount
-        self.last_updated = timezone.now()
-        self.receipt_Number = receipt_number  # ذخیره شماره فیش
-        self.save()
-        InventoryLog.objects.create(inventory=self, change_type='ADD', amount=amount,user=user,receipt_Number = self.receipt_Number)
-
+        try:
+            self.quantity += amount
+            self.last_updated = timezone.now()
+            self.receipt_Number = receipt_number  # ذخیره شماره فیش
+            self.save()
+            InventoryLog.objects.create(inventory=self, change_type='ADD', amount=amount,user=user,receipt_Number = self.receipt_Number)
+            return True , 'مقادیر مورد نظر با موفقیت اضافه گردید'
+        except:
+            return False, 'خطا در افزودن در دیتابیس'
     def remove_stock(self, amount,user):
         """برداشتن کالا از انبار و ایجاد لاگ به‌طور خودکار"""
         if self.quantity >= amount:
@@ -530,6 +533,8 @@ class MaterialComposition(models.Model):
     def __str__(self):
         discard_status = " (Discarded)" if self.has_discard else ""
         return f"{self.ingredient.name} in {self.main_material.name}{discard_status}"
+
+
 
 
 class ProductionLog(models.Model):

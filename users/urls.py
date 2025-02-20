@@ -3,7 +3,7 @@ from .views import error_page, home, material_composition_view, profile, Registe
         ,my_orders,add_raw_material,post_edit_quil\
         ,create_order,add_mother_material,show_order,snapp,show_restaurant_list,\
         restaurant_food_list,add_restaurant,print_order,foodRawMaterials,addfoodrawmaterial,show_food_material,night_food_order,\
-        show_flow,section1_view,section2_view,section3_view,section4_view,section5_view,load_temp,CustomLogoutView,add_store,success_page,\
+        load_temp,CustomLogoutView,add_store,success_page,\
         show_store,submit_data,show_test,take_store,confrim_take_store,log_view_store,\
         register_entry,register_exit,get_allowed_locations,histoty_entry,update_prices, show_night_order_material
 
@@ -35,13 +35,6 @@ urlpatterns = [
 
 
     path('orders/print_order/<int:id>', print_order, name='order-show'),
-    path('orders/show_flow/<int:order_id>', show_flow, name='show_flow'),
-
-    path('section1/<int:order_id>/', section1_view, name='section1_url'),
-    path('section2/<int:order_id>/', section2_view, name='section2_url'),
-    path('section3/<int:order_id>/', section3_view, name='section3_url'),
-    path('section4/<int:order_id>/', section4_view, name='section4_url'),
-    path('section5/<int:order_id>/', section5_view, name='section5_url'),
 
 
     

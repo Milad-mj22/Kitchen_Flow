@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'tinymce',
     'phone_field',
     'django_extensions',
-    'menu'
+    'menu',
+    'order_flow',
 ]
 
 MIDDLEWARE = [

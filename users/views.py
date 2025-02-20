@@ -1076,156 +1076,6 @@ def calculateProducibleMeals():
 
 
 
-def show_flow(request,order_id):
-    if request.method == 'GET':
-
-        context = {
-            'order_id': order_id,
-        }
-
-        return render(request, 'users/flow_page.html',context)
-
-
-
-
-
-def section1_view(request,order_id):
-    return render(request, 'users/section1.html')
-
-def section2_view(request,order_id):
-    return render(request, 'section2.html')
-
-def section3_view(request):
-    return render(request, 'section3.html')
-
-def section4_view(request , order_id):
-
-    if request.method == 'POST':
-
-
-        data = dict(request.POST.dict())
-        data.pop('csrfmiddlewaretoken','Not found')
-
-        restaurant = None
-
-        if 'warehouse' in data.keys():
-            restaurant = data['warehouse']
-            data.pop('warehouse','Not found')
-            restaurant = RestaurantBranch.objects.filter(id=restaurant).first()
-        else:
-            return
-        
-
-        order = ModelCreateOrder.objects.filter(id=order_id).first()
-
-        reminder, created = NightOrderRemainder.objects.get_or_create(
-            order=order,
-            restaurant = restaurant
-            )
-        
-        reminder.remainder_night_order = data
-
-            # Save the reminder to the database
-        reminder.save()
-
-
-
-        print(data)
-
-
-        return render(request, 'users/section5.html')
-
-        # restaurant = RestaurantBranch.objects.filter(id = )
-
-
-
-    if request.method == 'GET':
-
-        # You can use order_id here
-        # For example, you can query the database or pass it to the template
-        context = {
-            'order_id': order_id
-        }
-
-        ret = ModelCreateOrder.objects.filter(id=order_id).first()
-        if ret:
-            night_order = eval(ret.night_order)
-
-        possible_foods = {}
-
-        for food,value in night_order.items():
-            if value>0:
-                possible_foods[food]=value
-
-
-        restaurants = RestaurantBranch.objects.all()
-
-        mother_foods = MotherFood.objects.prefetch_related('mother_food_id').all()    
-
-
-
-        order = ModelCreateOrder.objects.filter(id=order_id).first()
-
-        remainder = NightOrderRemainder.objects.filter(
-            order=order,
-            ).first()
-
-        defult_values = eval(remainder.remainder_night_order)
-        # Filter Foods within each MotherFood
-        filter_names = []
-        copy = mother_foods
-        for mother_food in mother_foods:
-            final_foods = []
-            total_order = 0
-            print('mother_food',mother_food)
-            for food in mother_food.mother_food_id.all():
-                if food.name in list(possible_foods.keys()):
-
-                    if food.name in defult_values.keys():
-                        df_value = defult_values[food.name]
-                    else:
-                        df_value = 0
-
-                    data = {
-                        'id' : food.id,
-                        'name' : food.name,
-                        'defult_value' : df_value,
-                        'order' : possible_foods[food.name]
-                    }
-
-                    total_order+=possible_foods[food.name]
-
-                    final_foods.append(data)
-
-            if final_foods ==[]:
-                # copy.name=''
-                copy = copy.exclude(name=mother_food.name)
-                
-            else:
-                mother_food.final_foods = final_foods
-                mother_food.total = total_order
-                filter_names.append(mother_food.name)
-
-
-                food = copy.filter(name = mother_food.name)
-                food = mother_food
-          
-
-                # copy
-
-        return render(request, 'users/section4.html', context={'order_id':order_id,'possible_foods':possible_foods,'restaurants':restaurants,'mother_foods': mother_foods})
-
-
-
-
-
-
-
-
-def section5_view(request):
-    return render(request, 'section5.html')
-
-
 
 def load_temp(request):
     return render(request,'users/temp.html')
@@ -1408,7 +1258,7 @@ def material_composition_view(request):
                     raw_material_instance = raw_material.objects.get(name=key)
                     inventory, created = Inventory.objects.get_or_create(inventory_raw_material=raw_material_instance,warehouse=ware_house)
                     status,message = inventory.remove_stock(amount=decimal_value,user=profile)
-                    print(status,message)
+                    # print(status,message)
 
                     if not status:
                         return redirect('error_page')
@@ -1424,8 +1274,12 @@ def material_composition_view(request):
                     decimal_value = Decimal(value)
                     raw_material_instance = raw_material.objects.get(name=key)
                     inventory, created = Inventory.objects.get_or_create(inventory_raw_material=raw_material_instance,warehouse=ware_house)
-                    inventory.add_stock(amount=decimal_value,user=profile,receipt_number=receipt_number)
+                    status,message = inventory.add_stock(amount=decimal_value,user=profile,receipt_number=receipt_number)
+                    # print(status,message)
 
+                    if not status:
+                        return redirect('error_page')
+                
                         
 
         return redirect('success_page')  # Redirect to a success page

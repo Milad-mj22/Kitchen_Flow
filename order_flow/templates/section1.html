@@ -1,0 +1,96 @@
+{% extends "show_flow.html" %}
+
+{% block title %} Home Page {% endblock title %}
+{% block content2 %}
+
+{% load static %}
+
+
+<body>
+
+
+<div class="container">
+    <div class="container">
+        <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
+            <h1 class="page-title">درخواستی</h1>
+        </div>
+    
+
+    <form method="post">
+        {% csrf_token %}
+        <!-- New Food Name Field on one line with right-aligned label -->
+        <div class="form-group row mt-4">
+
+            <div class="user-info">
+                <div class="avatar">
+                    {{ request.user.username|first|upper }} 
+                </div>
+                <div class="user-details">
+                    <p><strong>کاربر:</strong> {{ request.user.username }}</p>
+                    <p><strong>سمت:</strong> {{ user_role }}</p>
+                </div>
+            </div>
+            
+            <!-- Table for materials -->
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>نام ماده اولیه</th>
+                        <th>واحد</th>
+                        <th>درخواستی</th>
+                        <!-- <th>تأیید</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usage in material_usages.items %}
+                    <tr>
+                        <td>{{ usage.0 }}</td>
+                        <td>{{ usage.1.unit }}</td>
+                        <td>{{ usage.1.quantity_used  }}</td>
+
+                        <input type="hidden" name="materials_names[]" value="{{ usage.0 }}">
+                        <input type="hidden" name="materials_units[]" value="{{ usage.1.unit }}">
+                        <input type="hidden" name="materials_quantities[]" value="{{ usage.1.quantity_used }}">
+
+                    </tr>
+
+                    {% endfor %}
+
+
+
+                </tbody>
+            </table>
+
+
+        {% if can_submit %}
+        {% if not is_confirmed %}
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary btn-sm" >ثبت انبار</button>
+
+            </div>
+
+        {% else %}
+        <div class="confirmation-bar">
+            <i class="fas fa-check-circle"></i>
+            تأیید شده توسط {{ is_confirmed.confirmed_by.user.username }}
+        </div>
+        {% endif %}
+        {% else %}
+            <span style="color: red;">دسترسی ندارید</span>
+        {% endif %}
+
+
+
+
+
+
+
+
+
+    </form>
+</div>
+</body>
+
+
+{% endblock %}
