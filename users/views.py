@@ -9,6 +9,7 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from khayyam import JalaliDatetime
 
+from order_flow.models import MaterialUsage, OrderStep
 from users.EntryModule.EntryUtils import get_latest_exit, is_user_in , UserWorkTimeManager
 from users.utils.CalulatedDistance import calculate_distance
 
@@ -658,6 +659,14 @@ def print_order(request,id):
     
     material_dict = eval(materials.content)
     new_materials ={}
+
+    orderStep1 = OrderStep.objects.filter(order=materials,step_number=1).first()
+    orderStep2 = OrderStep.objects.filter(order=materials,step_number=2).first()
+    orderStep3 = OrderStep.objects.filter(order=materials,step_number=3).first()
+    orderStep4 = OrderStep.objects.filter(order=materials,step_number=4).first()
+
+
+
     for material,value in material_dict.items():
         try:
            if value!='':
@@ -669,6 +678,7 @@ def print_order(request,id):
                         mother_id = ret.mother.describe
                         material_id = ret.describe
                         full_id = mother_id+material_id
+
                     except:
                         print('Cant get unit {}'.format(material))
                     new_materials[material] = {}
@@ -677,11 +687,20 @@ def print_order(request,id):
                     
                     new_materials[material]['value'] = str(value)
 
+                    if orderStep2:
+                        step2 = MaterialUsage.objects.filter(step=orderStep2,material=ret).first()
+                        new_materials[material]['step2'] = str(step2.quantity)
+                    if orderStep3:
+                        step3 = MaterialUsage.objects.filter(step=orderStep3,material=ret).first()
+                        new_materials[material]['step3'] = str(step3.quantity)
+                    if orderStep4:
+                        step4 = MaterialUsage.objects.filter(step=orderStep4,material=ret).first()
+                        new_materials[material]['step4'] = str(step4.quantity)
         except Exception as e:
             print(e)
 
 
-    headers = ['کد کالا','نام کالا','واحد','درخواستی','ارسالی','تحویلی','خروج','مانده','کد کالا','نام کالا','واحد','درخواستی','ارسالی','تحویلی','خروج','مانده']
+    headers = ['کد کالا','نام کالا','واحد','درخواستی','ارسالی','تحویلی','مانده','کد کالا','نام کالا','واحد','درخواستی','ارسالی','تحویلی','مانده']
 
     return render(request, 'users/print_order.html', {'materials': new_materials,'edit':False,'headers':headers})
 

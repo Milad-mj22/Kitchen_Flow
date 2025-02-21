@@ -15,6 +15,34 @@ body {
   src: url('/fonts/BNazanin.woff2') format('woff2'),
        url('/fonts/BNazanin.woff') format('woff');
 }
+
+
+
+
+
+/* Page Title Card with Light Gradient */
+.page-title-card {
+  background: linear-gradient(135deg, #fffde7, #F7D141); /* Light yellow gradient */
+  text-align: center; /* Horizontally center the text */
+  border: none;
+  display: flex;
+  align-items: center; /* Vertically center the text */
+  justify-content: center; /* Horizontally center the text */
+  height: 70px; /* Set height for the card to allow vertical centering */
+  margin-top: 30px;
+}
+
+/* Center align the page title */
+h1.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #7d7c7c;
+  margin-bottom: 0;
+}
+
+
+
+
 .text-center {
   text-align: center;
 }
@@ -125,3 +153,6 @@ tr:hover {
     background-color: rgba(227, 237, 37, 0.5);
   }
 }
+
+
+

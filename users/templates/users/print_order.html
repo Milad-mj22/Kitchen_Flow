@@ -36,29 +36,60 @@
             padding: 8px;
             text-align: right;
         }
-
+        th:nth-child(2), /* 'درخواستی' header */
+        td:nth-child(2)  /* 'درخواستی' data cells */ {
+            font-size: 1.2em; /* Increase font size */
+            font-weight: bold; /* Optional: make it bold */
+        }
         /* Specific styling for the 'درخواستی' column */
         th:nth-child(4), /* 'درخواستی' header */
         td:nth-child(4)  /* 'درخواستی' data cells */ {
             font-size: 1.2em; /* Increase font size */
             font-weight: bold; /* Optional: make it bold */
         }
-        th:nth-child(2), /* 'درخواستی' header */
-        td:nth-child(2)  /* 'درخواستی' data cells */ {
+
+        th:nth-child(5), /* 'درخواستی' header */
+        td:nth-child(5)  /* 'درخواستی' data cells */ {
             font-size: 1.2em; /* Increase font size */
             font-weight: bold; /* Optional: make it bold */
         }
+        th:nth-child(6), /* 'درخواستی' header */
+        td:nth-child(6)  /* 'درخواستی' data cells */ {
+            font-size: 1.2em; /* Increase font size */
+            font-weight: bold; /* Optional: make it bold */
+        }
+        th:nth-child(7), /* 'درخواستی' header */
+        td:nth-child(7)  /* 'درخواستی' data cells */ {
+            font-size: 1.2em; /* Increase font size */
+            font-weight: bold; /* Optional: make it bold */
+        }
+        th:nth-child(9), /* 'درخواستی' header */
+        td:nth-child(9)  /* 'درخواستی' data cells */ {
+            font-size: 1.2em; /* Increase font size */
+            font-weight: bold; /* Optional: make it bold */
+        }
+     
+        th:nth-child(11), /* 'درخواستی' header */
+        td:nth-child(11)  /* 'درخواستی' data cells */ {
+            font-size: 1.2em; /* Increase font size */
+            font-weight: bold; /* Optional: make it bold */
+        }  
 
         th:nth-child(12), /* 'درخواستی' header */
         td:nth-child(12)  /* 'درخواستی' data cells */ {
             font-size: 1.2em; /* Increase font size */
             font-weight: bold; /* Optional: make it bold */
         }  
-        th:nth-child(10), /* 'درخواستی' header */
-        td:nth-child(10)  /* 'درخواستی' data cells */ {
+        th:nth-child(13), /* 'درخواستی' header */
+        td:nth-child(13)  /* 'درخواستی' data cells */ {
             font-size: 1.2em; /* Increase font size */
             font-weight: bold; /* Optional: make it bold */
-        }
+        }  
+        th:nth-child(14), /* 'درخواستی' header */
+        td:nth-child(14)  /* 'درخواستی' data cells */ {
+            font-size: 1.2em; /* Increase font size */
+            font-weight: bold; /* Optional: make it bold */
+        }  
         /* Styling for the header container */
         .header-container {
             display: flex;
@@ -122,7 +153,7 @@
             }
 
             /* Show only the first 4 cells */
-            tr td:nth-child(-n+4) {
+            tr td:nth-child(-n+7) {
                 display: block;
             }
 
@@ -169,8 +200,11 @@
     </style>
 </head>
 <body>
+    <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
+        <h1 class="page-title">فرم حواله کالا</h1>
+    </div>
     <div class="header-container">
-        <h1 class="text-center mb-4">فرم درخواست و حواله کالا</h1>
+
         <button class="export-btn" onclick="exportTableToExcel('data-table', 'table-data')">Export to Excel</button>
     </div>
     <div class="container">
@@ -184,25 +218,21 @@
             </thead>
             <tbody id="table-body">
                 {% for material, data in materials.items %}
-                <tr>
-                    <td data-label="کد کالا">{{ data.code }}</td>
-                    <td data-label="نام کالا">{{ material }}</td>
-                    <td data-label="واحد">{{ data.unit }}</td>
-                    <td data-label="درخواستی">{{ data.value }}</td>
-                    <td data-label="ارسالی"></td>
-                    <td data-label="تحویلی"></td>
-                    <td data-label="خروج"></td>
-                    <td data-label="مانده"></td>
-                    <td data-label="کد کالا">{{ data.code }}</td>
-                    <td data-label="نام کالا">{{ material }}</td>
-                    <td data-label="واحد">{{ data.unit }}</td>
-                    <td data-label="درخواستی">{{ data.value }}</td>
-                    <td data-label="ارسالی"></td>
-                    <td data-label="تحویلی"></td>
-                    <td data-label="خروج"></td>
-                    <td data-label="مانده"></td>
-                </tr>
-                {% endfor %}
+                {% if forloop.counter0|divisibleby:2 %} <!-- Start a new row every 2 items -->
+                    <tr>
+                {% endif %}
+                        <td data-label="کد کالا">{{ data.code }}</td>
+                        <td data-label="نام کالا">{{ material }}</td>
+                        <td data-label="واحد">{{ data.unit }}</td>
+                        <td data-label="درخواستی">{{ data.value }}</td>
+                        <td data-label="ارسالی">{{ data.step2|floatformat:"-4" }}</td>
+                        <td data-label="تحویلی">{{ data.step3|floatformat:"-4" }}</td>
+                        <td data-label="مانده">{{ data.step4|floatformat:"-4" }}</td>
+                {% if forloop.counter0|divisibleby:2 == False or forloop.last %} <!-- Close row after 2 items -->
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            
             </tbody>
         </table>
     </div>

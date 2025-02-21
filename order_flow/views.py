@@ -5,6 +5,10 @@ from users.models import RestaurantBranch,create_order,NightOrderRemainder,mothe
 from .models import OrderStep,MaterialUsage
 import ast
 from decimal import Decimal
+from django.contrib import messages
+from django.shortcuts import redirect
+
+
 
 def show_flow(request,order_id):
     if request.method == 'GET':
@@ -64,6 +68,15 @@ def get_allowed_confirm_users(stepNumber:int):
     if stepNumber==2:
         allowed_roles = ['manager', 'fishzan']  # Adjust based on your logic
         return allowed_roles
+
+    if stepNumber==3:
+        allowed_roles = ['manager', 'fishzan']  # Adjust based on your logic
+        return allowed_roles
+  
+    if stepNumber==4:
+        allowed_roles = ['manager', 'fishzan']  # Adjust based on your logic
+        return allowed_roles  
+    
 
 def section1_view(request,order_id):
 
@@ -143,33 +156,37 @@ def section2_view(request,order_id):
     step_number = 2
 
     if request.method == 'POST':
-        
-        material_names = request.POST.getlist("materials_names[]")
-        material_sent = request.POST.getlist("materials_sent[]")
-        
-        ret = create_order.objects.filter(id=order_id).first()
 
-        user_profile = Profile.objects.get(user=request.user)
-
-        order_step_obj, created = OrderStep.objects.get_or_create(
-            step_number=step_number, 
-            order=ret,  # Ensure 'ret' is the correct order instance
-            confirmed_by = user_profile
-        )
-        materials_data = []
-        for i in range(len(material_names)):
-
-
-            material = get_object_or_404(raw_material, name= material_names[i])  # Find material by name
+        try:
             
-            MaterialUsage.objects.create(
-                step=order_step_obj,
-                material=material,
-                quantity=Decimal(float(material_sent[i]))
+            material_names = request.POST.getlist("materials_names[]")
+            material_sent = request.POST.getlist("materials_sent[]")
+            
+            ret = create_order.objects.filter(id=order_id).first()
+
+            user_profile = Profile.objects.get(user=request.user)
+
+            order_step_obj, created = OrderStep.objects.get_or_create(
+                step_number=step_number, 
+                order=ret,  # Ensure 'ret' is the correct order instance
+                confirmed_by = user_profile
             )
+            materials_data = []
+            for i in range(len(material_names)):
+                material = get_object_or_404(raw_material, name= material_names[i])  # Find material by name
+                MaterialUsage.objects.create(
+                    step=order_step_obj,
+                    material=material,
+                    quantity=Decimal(float(material_sent[i]))
+                )
 
 
-        return JsonResponse({"status": "success"})
+            messages.success(request, "ثبت خروج با موفقیت انجام شد.")  # پیام موفقیت
+            return redirect("section2_url", order_id=order_id)  # هدایت به صفحه دیگر
+
+        except:
+            messages.error(request,'خطا در ذخیره اطلاعات')
+            return redirect("section2_url", order_id=order_id)  # هدایت به صفحه دیگر
 
 
 
@@ -182,6 +199,17 @@ def section2_view(request,order_id):
         # Check if the user has access to submit this step
         can_submit = user_role in allowed_roles
         is_confirmed = check_order_confirmed(order=ret,stepNumber=step_number)
+
+        if is_confirmed:
+            order_step_obj = OrderStep.objects.filter(order = ret , step_number=step_number).first()
+
+            for material in raw_materials_obj.values():
+
+                obj = MaterialUsage.objects.filter(step = order_step_obj,material=material).first()
+
+                material.step2_quantity = obj.quantity
+
+
         return render(request, 'section2.html', {
             'material_usages': raw_materials_obj,
             'user_role': user_role,
@@ -195,131 +223,171 @@ def section2_view(request,order_id):
 
 
 def section3_view(request,order_id):
-    return render(request, 'section3.html',{
-            'order_id':order_id
-        })
+    context = {'order_id': order_id}
+    step_number = 3
 
+    if request.method == 'POST':
+        try:
+            material_names = request.POST.getlist("materials_names[]")
+            material_sent = request.POST.getlist("materials_sent[]")
+            
+            ret = create_order.objects.filter(id=order_id).first()
+
+            user_profile = Profile.objects.get(user=request.user)
+
+            order_step_obj, created = OrderStep.objects.get_or_create(
+                step_number=step_number, 
+                order=ret,  # Ensure 'ret' is the correct order instance
+                confirmed_by = user_profile
+            )
+            materials_data = []
+            for i in range(len(material_names)):
+                material = get_object_or_404(raw_material, name= material_names[i])  # Find material by name
+                MaterialUsage.objects.create(
+                    step=order_step_obj,
+                    material=material,
+                    quantity=Decimal(float(material_sent[i]))
+                )
+
+            messages.success(request, "ثبت خروج با موفقیت انجام شد.")  # پیام موفقیت
+            return redirect("section3_url", order_id=order_id)  # هدایت به صفحه دیگر
+
+        except:
+            messages.error(request,'خطا در ذخیره اطلاعات')
+            return redirect("section3_url", order_id=order_id)  # هدایت به صفحه دیگر
+
+
+
+    else:
+        # try:
+            ret = create_order.objects.filter(id=order_id).first()
+            raw_materials_obj = convert_raw_material2object(ret.content)
+            user_profile = Profile.objects.get(user=request.user)
+            user_role = user_profile.job_position.name
+            allowed_roles = get_allowed_confirm_users(stepNumber=step_number)
+            # Check if the user has access to submit this step
+            can_submit = user_role in allowed_roles
+
+            is_confirmed_step2 = check_order_confirmed(order=ret,stepNumber=2)
+
+            if not is_confirmed_step2:
+                return render(request , 'not_confirmed.html' ,{
+                    'message' : '        ابتدا باید ارسال از آماده سازی  تأیید شود تا بتوانید وارد این قسمت شوید!',
+                'order_id':order_id
+
+                })
+
+            is_confirmed_step3 = check_order_confirmed(order=ret,stepNumber=step_number)
+            order_step_2_obj = OrderStep.objects.filter(order = ret , step_number=2).first()
+            order_step_3_obj = OrderStep.objects.filter(order = ret , step_number=step_number).first()
+
+
+
+            for material in raw_materials_obj.values():
+                obj = MaterialUsage.objects.filter(step = order_step_2_obj,material=material).first()
+                material.step2_quantity = obj.quantity
+                if is_confirmed_step3:
+                    obj = MaterialUsage.objects.filter(step = order_step_3_obj,material=material).first()
+                    material.step3_quantity = obj.quantity
+
+
+
+            return render(request, 'section3.html', {
+                'material_usages': raw_materials_obj,
+                'user_role': user_role,
+                'can_submit': can_submit,
+                'is_confirmed': is_confirmed_step3,
+                'order_id':order_id
+            })  
+
+        # except:
+        #     messages.error(request,'خطا در دریافت اطلاعات')
+        #     return render(request, 'section3.html', {
+        #         'order_id':order_id,
+        #         'messages':'خطا در دریافت اطلاعات'
+        #     })  
 
 def section4_view(request , order_id):
-
+    step_number=4
+    
     if request.method == 'POST':
 
 
-        data = dict(request.POST.dict())
-        data.pop('csrfmiddlewaretoken','Not found')
+        try:
+            material_names = request.POST.getlist("materials_names[]")
+            material_sent = request.POST.getlist("materials_sent[]")
+            
+            ret = create_order.objects.filter(id=order_id).first()
 
-        restaurant = None
+            user_profile = Profile.objects.get(user=request.user)
 
-        if 'warehouse' in data.keys():
-            restaurant = data['warehouse']
-            data.pop('warehouse','Not found')
-            restaurant = RestaurantBranch.objects.filter(id=restaurant).first()
-        else:
-            return
-        
-
-        order = create_order.objects.filter(id=order_id).first()
-
-        reminder, created = NightOrderRemainder.objects.get_or_create(
-            order=order,
-            restaurant = restaurant
+            order_step_obj, created = OrderStep.objects.get_or_create(
+                step_number=step_number, 
+                order=ret,  # Ensure 'ret' is the correct order instance
+                confirmed_by = user_profile
             )
+
+            for i in range(len(material_names)):
+                material = get_object_or_404(raw_material, name= material_names[i])  # Find material by name
+                MaterialUsage.objects.create(
+                    step=order_step_obj,
+                    material=material,
+                    quantity=Decimal(float(material_sent[i]))
+                )
+
+            messages.success(request, "ثبت مانده با موفقیت انجام شد.")  # پیام موفقیت
+            return redirect("section4_url", order_id=order_id)  # هدایت به صفحه دیگر
+
+        except:
+            messages.error(request,'خطا در ذخیره اطلاعات')
+            return redirect("section4_url", order_id=order_id)  # هدایت به صفحه دیگر
+
+
+    else:
         
-        reminder.remainder_night_order = data
-
-            # Save the reminder to the database
-        reminder.save()
-
-
-
-        print(data)
-
-
-        return render(request, 'users/section5.html')
-
-        # restaurant = RestaurantBranch.objects.filter(id = )
-
-
-
-    if request.method == 'GET':
-
-        # You can use order_id here
-        # For example, you can query the database or pass it to the template
-        context = {
-            'order_id': order_id
-        }
-
         ret = create_order.objects.filter(id=order_id).first()
-        if ret:
-            night_order = eval(ret.night_order)
+        raw_materials_obj = convert_raw_material2object(ret.content)
+        user_profile = Profile.objects.get(user=request.user)
+        user_role = user_profile.job_position.name
+        allowed_roles = get_allowed_confirm_users(stepNumber=step_number)
+        # Check if the user has access to submit this step
+        can_submit = user_role in allowed_roles
 
-        possible_foods = {}
+        is_confirmed_step3 = check_order_confirmed(order=ret,stepNumber=3)
 
-        for food,value in night_order.items():
-            if value>0:
-                possible_foods[food]=value
+        if not is_confirmed_step3:
+            return render(request , 'not_confirmed.html' ,{
+                'message' : '        ابتدا باید تحویل رستوران انجام شود تا بتوانید وارد این قسمت شوید!',
+            'order_id':order_id
 
+            })
 
-        restaurants = RestaurantBranch.objects.all()
-
-        mother_foods = mother_food.objects.prefetch_related('mother_food_id').all()    
-
-
-
-        order = create_order.objects.filter(id=order_id).first()
-
-        remainder = NightOrderRemainder.objects.filter(
-            order=order,
-            ).first()
-        if remainder is not None:
-            if remainder.remainder_night_order is not None:
-                defult_values = eval(remainder.remainder_night_order)
-                # Filter Foods within each mother_food
-                filter_names = []
-                copy = mother_foods
-                for mother_food in mother_foods:
-                    final_foods = []
-                    total_order = 0
-                    print('mother_food',mother_food)
-                    for food in mother_food.mother_food_id.all():
-                        if food.name in list(possible_foods.keys()):
-
-                            if food.name in defult_values.keys():
-                                df_value = defult_values[food.name]
-                            else:
-                                df_value = 0
-
-                            data = {
-                                'id' : food.id,
-                                'name' : food.name,
-                                'defult_value' : df_value,
-                                'order' : possible_foods[food.name]
-                            }
-
-                            total_order+=possible_foods[food.name]
-
-                            final_foods.append(data)
-
-                    if final_foods ==[]:
-
-                        copy = copy.exclude(name=mother_food.name)
-                        
-                    else:
-                        mother_food.final_foods = final_foods
-                        mother_food.total = total_order
-                        filter_names.append(mother_food.name)
-
-
-                        food = copy.filter(name = mother_food.name)
-                        food = mother_food
-                
-
-                        # copy
-
-        return render(request, 'section4.html', context={'order_id':order_id,'possible_foods':possible_foods,'restaurants':restaurants,'mother_foods': mother_foods})
+        is_confirmed_step4 = check_order_confirmed(order=ret,stepNumber=step_number)
+        order_step_2_obj = OrderStep.objects.filter(order = ret , step_number=2).first()
+        order_step_3_obj = OrderStep.objects.filter(order = ret , step_number=3).first()
+        order_step_4_obj = OrderStep.objects.filter(order = ret , step_number=step_number).first()
 
 
 
+        for material in raw_materials_obj.values():
+            obj = MaterialUsage.objects.filter(step = order_step_2_obj,material=material).first()
+            material.step2_quantity = obj.quantity
+
+            obj = MaterialUsage.objects.filter(step = order_step_3_obj,material=material).first()
+            material.step3_quantity = obj.quantity
+            if is_confirmed_step4:
+                obj = MaterialUsage.objects.filter(step = order_step_4_obj,material=material).first()
+                material.step4_quantity = obj.quantity
+
+
+
+        return render(request, 'section4.html', {
+            'material_usages': raw_materials_obj,
+            'user_role': user_role,
+            'can_submit': can_submit,
+            'is_confirmed': is_confirmed_step4,
+            'order_id':order_id
+        })
 
 
 
