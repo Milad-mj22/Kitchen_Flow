@@ -7,9 +7,10 @@ import ast
 from decimal import Decimal
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
 
 
-
+@login_required
 def show_flow(request,order_id):
     if request.method == 'GET':
 
@@ -77,7 +78,7 @@ def get_allowed_confirm_users(stepNumber:int):
         allowed_roles = ['manager', 'fishzan']  # Adjust based on your logic
         return allowed_roles  
     
-
+@login_required
 def section1_view(request,order_id):
 
     context = {'order_id': order_id}
@@ -149,7 +150,7 @@ def section1_view(request,order_id):
 
 
 
-
+@login_required
 def section2_view(request,order_id):
     # should add select ware house that exit and add exist from warehouse
     context = {'order_id': order_id}
@@ -221,7 +222,7 @@ def section2_view(request,order_id):
 
 
 
-
+@login_required
 def section3_view(request,order_id):
     context = {'order_id': order_id}
     step_number = 3
@@ -307,6 +308,8 @@ def section3_view(request,order_id):
         #         'messages':'خطا در دریافت اطلاعات'
         #     })  
 
+        
+@login_required
 def section4_view(request , order_id):
     step_number=4
     
