@@ -16,29 +16,40 @@ from menu.forms import SoldOutForm
 from menu.models import SoldOutStatus
 from users.models import mother_food , FoodRawMaterial
 
-
-@login_required
-def show_menu(request):
-        
-            # mother_foods = mother_food.objects.all()
-            # foods = FoodRawMaterial.objects.all()
-
-            # food_names = list(FoodRawMaterial.objects.values_list('name', flat=True))
-            pizza_single = FoodRawMaterial.objects.filter(mother__name='پیتزا تکنفره')
-            pizza_double = FoodRawMaterial.objects.filter(mother__name='پیتزا دونفره')
-
-
-
-            return render(request, 'users/menu.html',{'pizza_single':pizza_single,'pizza_double':pizza_double})
-
-
-
-
 from django.http import JsonResponse
 from django.shortcuts import render
 from .forms import SoldOutForm
 from .models import SoldOutStatus
 from .signals import menu_status
+
+
+
+@login_required
+def show_menu_pizza(request):
+        
+        pizza_single = FoodRawMaterial.objects.filter(mother__name='پیتزا تکنفره')
+        pizza_double = FoodRawMaterial.objects.filter(mother__name='پیتزا دونفره')
+
+
+
+        return render(request, 'users/menu.html',{'pizza_single':pizza_single,'pizza_double':pizza_double})
+
+
+@login_required
+def show_menu_others(request):
+        
+        pizza_single = FoodRawMaterial.objects.filter(mother__name__in=['ساندویچ','سالاد','سیب زمینی'])
+        pizza_double = FoodRawMaterial.objects.filter(
+                            mother__name__in=['همبرگر']
+                        )
+        # pizza_double = FoodRawMaterial.objects.filter(mother__name='پیتزا دونفره')
+
+
+
+        return render(request, 'users/menu.html',{'pizza_single':pizza_single,'pizza_double':pizza_double})
+
+
+
 
 
 

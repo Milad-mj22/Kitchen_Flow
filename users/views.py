@@ -1923,8 +1923,6 @@ def update_prices(request,city,res_name):
             name=res_name, city__name=city
         ).first()  # Get the first match
     
-    # gp = get_price(res_name=data['name'],res_link=data['link'],city= data['city'])
-    # gp.get_name_price()
 
     if ret is None:
         print('Restaurant link is not in DB')
@@ -1939,24 +1937,7 @@ def update_prices(request,city,res_name):
 
     gp.get_name_price(update=True)
 
-
-
-
-
     print(id)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1966,9 +1947,6 @@ def success_page(request):
 
 def error_page(request):
     return render(request, 'users/error_page.html')  # Render your success page template
-
-
-
 
 
 def submit_data(request):
@@ -2008,3 +1986,8 @@ def register_exit(request, log_id):
 
 
 
+def show_menu_options(request):
+
+    menu_names = {'پیتزا ها' :'/menu/pizza' , 'سایر محصولات' : '/menu/others'}
+
+    return render(request,'users/menu_options.html',{'menu_names':menu_names})
