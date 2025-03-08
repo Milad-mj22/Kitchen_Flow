@@ -546,3 +546,12 @@ class ProductionLog(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - تولید: {self.produced_quantity} - ضایعات: {self.discarded_quantity}"
+
+
+
+class RemainingMaterialsUsage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    used_at = models.DateTimeField(default=timezone.now)  # تاریخ تولید
+
+    def __str__(self):
+        return f"{self.user.username} - {self.used_at}"

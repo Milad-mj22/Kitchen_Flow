@@ -15,7 +15,7 @@ from users.utils.CalulatedDistance import calculate_distance
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 from django.views import generic
-from .models import AllowedLocation, CapturedImage, Inventory, InventoryLog, MaterialComposition, Post,Tools,full_post,Profile
+from .models import AllowedLocation, CapturedImage, Inventory, InventoryLog, MaterialComposition, Post, RemainingMaterialsUsage,Tools,full_post,Profile
 from django.shortcuts import get_object_or_404
 import numpy as np
 from django.http import HttpResponse
@@ -880,6 +880,16 @@ def night_food_order(request):
         
         data = dict(request.POST.dict())
         data.pop('csrfmiddlewaretoken','Not found')
+       
+        if 'use_remaining' in data.keys():
+            use_remaining = data['use_remaining']
+            data.pop('use_remaining','Not found')
+            if use_remaining:
+                RemainingMaterialsUsage.objects.create(user=request.user)
+
+        else:
+            return
+
 
         materials_quantity = get_material_quantity(show_all=True)
 
@@ -939,14 +949,35 @@ def night_food_order(request):
 
     else:
         mother_foods = MotherFood.objects.prefetch_related('mother_food_id').all()
-        # mother_foods = MotherFood.objects.all()
-
-        # foods = FoodRawMaterial.objects.all()
-        # food_list =[]
-        # for food in foods:
-        #     food_list.append(food.name)
         producible_foods = calculateProducibleMeals()
 
+
+
+        from django.utils.timezone import now
+        from django.db.models import Max
+
+        # Get the latest recorded date from RemainingMaterialsUsage
+        last_usage_date = RemainingMaterialsUsage.objects.aggregate(Max('used_at'))['used_at__max']
+
+        # Ensure we have a valid date, fallback to earliest order date if None
+        if last_usage_date is None:
+            last_usage_date = ModelCreateOrder.objects.earliest('created_at').created_at
+
+        # Filter orders from last usage date to today, limiting to last 10
+        last_10_orders = ModelCreateOrder.objects.filter(
+            created_at__gte=last_usage_date,
+            created_at__lte=now()
+        ).order_by('-created_at')[:10]
+        # Get all OrderStep objects related to these orders where step_number is 4
+        step_4_orders = OrderStep.objects.filter(order__in=last_10_orders, step_number=4)
+
+        # Get all MaterialUsage objects related to these steps where quantity > 0
+        materials_in_step_4 = MaterialUsage.objects.filter(step__in=step_4_orders, quantity__gt=0)
+        # If you want only distinct materials (without duplicate entries)
+        # distinct_materials = materials_in_step_4.values_list('material', flat=True).distinct()
+
+        # If you need full material details
+        # distinct_materials_details = raw_material.objects.filter(id__in=distinct_materials)
 
 
 
@@ -965,7 +996,7 @@ def night_food_order(request):
             mother_food.producible_quantity = total                 
 
 
-        return render(request, 'users/night_order.html', {'mother_foods': mother_foods})
+        return render(request, 'users/night_order.html', {'mother_foods': mother_foods,'exist_materials':materials_in_step_4})
     
 
 
