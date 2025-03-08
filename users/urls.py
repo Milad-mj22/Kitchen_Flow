@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import error_page, home, material_composition_view, profile, RegisterView,tools \
+from .views import error_page, home, material_composition_view, profile, RegisterView, show_menu_options,tools \
         ,my_orders,add_raw_material,post_edit_quil\
         ,create_order,add_mother_material,show_order,snapp,show_restaurant_list,\
         restaurant_food_list,add_restaurant,print_order,foodRawMaterials,addfoodrawmaterial,show_food_material,night_food_order,\
@@ -7,6 +7,7 @@ from .views import error_page, home, material_composition_view, profile, Registe
         show_store,submit_data,show_test,take_store,confrim_take_store,log_view_store,\
         register_entry,register_exit,get_allowed_locations,histoty_entry,update_prices, show_night_order_material
 
+from menu.views import set_sold_out
         
 
 from django.conf import settings
@@ -32,6 +33,8 @@ urlpatterns = [
     # path('tools/snapp/<str:city>/<str:res_name>',restaurant_food_list, name='tools'),
     path('tools/snapp/<str:city>/<str:res_name>',restaurant_food_list, name='tools'),
     path('tools/snapp/<str:city>/<str:res_name>/update_prices',update_prices, name='tools'),
+    path('tools/menu',show_menu_options, name='tools'),
+    path('tools/settingmenu',set_sold_out, name='tools'),
 
 
     path('orders/print_order/<int:id>', print_order, name='order-show'),
