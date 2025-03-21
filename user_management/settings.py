@@ -35,7 +35,7 @@ django.utils.encoding.smart_text = smart_str
 SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['37.191.77.130','192.168.1.107','172.20.10.4','127.0.0.1','0.0.0.0','192.168.1.30','94.183.166.188','192.168.1.211','37.255.213.180',"seketalamanager.ir", "www.seketalamanager.ir", 'go.microsoft.com',"*"]
 
