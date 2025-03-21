@@ -71,29 +71,6 @@
 }
 
 
-.btn-warning {
-    background-color: #ffc107 !important; /* Bootstrap warning color */
-    border: none;
-    color: #212529; /* Dark text for better contrast */
-    font-weight: bold;
-    padding: 6px 12px;
-    border-radius: 8px; /* Rounded edges */
-    transition: all 0.3s ease-in-out;
-    text-decoration: none;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
-.btn-warning:hover {
-    background-color: #ff9800 !important; /* Darker orange on hover */
-    color: white;
-    transform: scale(1.05); /* Slight enlargement */
-}
-
-.btn-warning:focus {
-    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
-}
-
 
 </style>
 
@@ -102,12 +79,14 @@
 
 <div class="container-fluid p-0 m-0">  <!-- Removed padding/margin -->
     <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
-            <h1 class="page-title">درخواستی</h1>
+            <h1 class="page-title"> ویرایش مرحله {{step_number}}</h1>
         </div>
     
 
     <form method="post">
         {% csrf_token %}
+        <input type="hidden" name="step_number" value="{{ step_number }}">
+
         <!-- New Food Name Field on one line with right-aligned label -->
 
             <div class="user-info">
@@ -127,7 +106,8 @@
                         <tr>
                             <th>نام ماده اولیه</th>
                             <th>واحد</th>
-                            <th>درخواستی</th>
+                            <th>مقدار اولیه</th>
+                            <th>مقدار جدید</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -135,7 +115,15 @@
                     <tr>
                         <td>{{ usage.0 }}</td>
                         <td>{{ usage.1.unit }}</td>
-                        <td>{{ usage.1.quantity_used |floatformat:"-4"  }}</td>
+                        <td>{{ usage.1.step_quantity |floatformat:"-4"  }}</td>
+                        <td>
+                            <input type="number" name="materials_sent[]"
+                                value="{{ usage.1.step_quantity|floatformat:"-4"  }}" 
+                                class="text-center"
+                                step="any">
+                        
+                            <input type="hidden" name="materials_new[]" value="{{ usage.1.quantity_new }}">
+                        </td>
 
                         <input type="hidden" name="materials_names[]" value="{{ usage.0 }}">
                         <input type="hidden" name="materials_units[]" value="{{ usage.1.unit }}">
@@ -151,31 +139,10 @@
         
 
         {% if can_submit %}
-        {% if not is_confirmed %}
             <div class="text-end">
-                <button type="submit" class="btn btn-primary btn-sm">ثبت درخواست</button>
+                <button type="submit" class="btn btn-primary btn-sm">ثبت ویرایش</button>
             </div>
-        {% else %}
-        <div class="confirmation-bar">
-            <i class="fas fa-check-circle"></i>
-            تأیید شده توسط {{ is_confirmed.confirmed_by.user.username }}
 
-            <a href="{% url 'edit_request' order_id step_number %}" class="btn btn-warning btn-sm">ویرایش</a>
-
-
-        </div>
-        {% endif %}
-        {% else %}
-        <div class="confirmation-bar">
-            {% if is_confirmed %}
-            <i class="fas fa-check-circle"></i>
-            تأیید شده توسط  {{ is_confirmed.confirmed_by.user.username }}
-
-            {% else %}
-            <i class="fas fa-error-circle"></i>
-            دسترسی ندارید در انتظار تایید
-            {% endif %}
-        </div>
         {% endif %}
     </form>
 </div>

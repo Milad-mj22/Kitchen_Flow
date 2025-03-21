@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import section1_view,section2_view,section3_view,section4_view,\
-                    section5_view,show_flow
+from .views import edit_request, section1_view,section2_view,section3_view,section4_view,\
+                    show_flow
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -15,6 +15,9 @@ urlpatterns = [
     path('section2/<int:order_id>/', section2_view, name='section2_url'),
     path('section3/<int:order_id>/', section3_view, name='section3_url'),
     path('section4/<int:order_id>/', section4_view, name='section4_url'),
-    path('section5/<int:order_id>/', section5_view, name='section5_url'),
+
+
+    path('edit-request/<int:order_id>/<int:step_number>/', edit_request, name='edit_request')
+
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

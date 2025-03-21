@@ -73,6 +73,40 @@
 
 
 
+
+
+
+
+
+.btn-warning {
+    background-color: #ffc107 !important; /* Bootstrap warning color */
+    border: none;
+    color: #212529; /* Dark text for better contrast */
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 8px; /* Rounded edges */
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.btn-warning:hover {
+    background-color: #ff9800 !important; /* Darker orange on hover */
+    color: white;
+    transform: scale(1.05); /* Slight enlargement */
+}
+
+.btn-warning:focus {
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+
+
+
+
+
+
 </style>
 
 <body>
@@ -116,7 +150,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for usage in material_usages.items %}
+                    {% for usage in material_usages.items %}zz
                     <tr>
                         <td>{{ usage.0 }}</td>
                         <td>{{ usage.1.quantity_used |floatformat:"-4" }}</td>
@@ -154,6 +188,8 @@
         <div class="confirmation-bar">
             <i class="fas fa-check-circle"></i>
             تأیید شده توسط {{ is_confirmed.confirmed_by.user.username }}
+            <a href="{% url 'edit_request' order_id step_number %}" class="btn btn-warning btn-sm">ویرایش</a>
+
         </div>
         {% endif %}
         {% else %}

@@ -9,6 +9,10 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from decimal import Decimal
+
 
 @login_required
 def show_flow(request,order_id):
@@ -121,7 +125,8 @@ def section1_view(request,order_id):
     
 
 
-        return JsonResponse({"status": "success"})
+        return redirect("section1_url", order_id=order_id)  # هدایت به صفحه دیگر
+    
 
     else:
 
@@ -140,7 +145,8 @@ def section1_view(request,order_id):
             'user_role': user_role,
             'can_submit': can_submit,
             'is_confirmed': is_confirmed,
-            'order_id':order_id
+            'order_id':order_id,
+            'step_number' : step_number
         })
 
 
@@ -207,8 +213,8 @@ def section2_view(request,order_id):
             for material in raw_materials_obj.values():
 
                 obj = MaterialUsage.objects.filter(step = order_step_obj,material=material).first()
-
-                material.step2_quantity = obj.quantity
+                if obj is not None:
+                    material.step2_quantity = obj.quantity
 
 
         return render(request, 'section2.html', {
@@ -216,7 +222,9 @@ def section2_view(request,order_id):
             'user_role': user_role,
             'can_submit': can_submit,
             'is_confirmed': is_confirmed,
-            'order_id':order_id
+            'order_id':order_id,
+            'step_number' : step_number
+
         })
 
 
@@ -298,7 +306,9 @@ def section3_view(request,order_id):
                 'user_role': user_role,
                 'can_submit': can_submit,
                 'is_confirmed': is_confirmed_step3,
-                'order_id':order_id
+                'order_id':order_id,
+                'step_number' : step_number
+
             })  
 
         # except:
@@ -389,15 +399,125 @@ def section4_view(request , order_id):
             'user_role': user_role,
             'can_submit': can_submit,
             'is_confirmed': is_confirmed_step4,
-            'order_id':order_id
+            'order_id':order_id,
+            'step_number' : step_number
+
         })
 
 
 
 
+def edit_request(request, order_id,step_number):
+    """
+    Edit an existing request for an order, updating material usage.
+    """
+    if request.method == "POST":
+    # try:
+            step_number =  request.POST.get('step_number')  # Get the step number
+            if step_number is None:
+                messages.error(request, "خطا در دریافت اطلاعات")
+                return redirect('section1_url', order_id=order_id)
+            step_number = int(step_number)
+            url_name = f'section{step_number}_url'
 
-def section5_view(request,order_id):
-    return render(request, 'section5.html',{
-            'order_id':order_id
+
+            user_profile = Profile.objects.get(user=request.user)
+            user_role = user_profile.job_position.name
+            allowed_roles = get_allowed_confirm_users(stepNumber=step_number)
+            if user_role not in allowed_roles:
+                messages.error(request, "شما مجاز به ویرایش این درخواست نیستید.")
+                return redirect(url_name, order_id=order_id)
+
+
+
+
+
+            material_names = request.POST.getlist("materials_names[]")
+            material_quantities = request.POST.getlist("materials_quantities[]")
+            materials_new = request.POST.getlist("materials_sent[]")
+
+
+            if len(material_names) != len(materials_new):
+                messages.error(request, "خطا در دریافت اطلاعات")
+                return redirect(url_name, order_id=order_id)
+
+
+            new_materials_dict = {}
+
+            for iter , item in enumerate(material_names):
+                new_materials_dict[item] = materials_new[iter]
+
+
+
+            ret = create_order.objects.filter(id=order_id).first()
+            raw_materials_obj = convert_raw_material2object(ret.content)
+            order_step_obj = OrderStep.objects.filter(order = ret , step_number=step_number).first()
+
+
+            for material in raw_materials_obj.values():
+                obj = MaterialUsage.objects.filter(step = order_step_obj,material=material).first()
+                if obj is not None:
+                    if material.name in list(new_materials_dict.keys()) :
+                        new_value = new_materials_dict[material.name]
+                        obj.quantity =Decimal(new_value)
+                        obj.save()
+
+            # # Update materials
+            # for i in range(len(material_names)):
+            #     material = get_object_or_404(raw_material, name=material_names[i])
+            #     material_usage, _ = MaterialUsage.objects.get_or_create(
+            #         step=order_step_obj, material=material
+            #     )
+            #     material_usage.quantity = Decimal(material_quantities[i])
+            #     material_usage.save()
+
+            messages.success(request, "ویرایش درخواست با موفقیت انجام شد.")
+            return redirect(url_name, order_id=order_id)
+
+        # except Exception as e:
+        #     messages.error(request, f"خطا در ویرایش درخواست: {str(e)}")
+        #     return redirect("section1_url", order_id=order_id)
+
+    else:
+    
+        ret = create_order.objects.filter(id=order_id).first()
+        raw_materials_obj = convert_raw_material2object(ret.content)
+        user_profile = Profile.objects.get(user=request.user)
+        user_role = user_profile.job_position.name
+        allowed_roles = get_allowed_confirm_users(stepNumber=step_number)
+
+
+
+        ret = create_order.objects.filter(id=order_id).first()
+
+        raw_materials_obj = convert_raw_material2object(ret.content)
+        user_profile = Profile.objects.get(user=request.user)
+        user_role = user_profile.job_position.name
+        allowed_roles = get_allowed_confirm_users(stepNumber=step_number)
+        # Check if the user has access to submit this step
+        can_submit = user_role in allowed_roles
+
+
+        order_step_obj = OrderStep.objects.filter(order = ret , step_number=step_number).first()
+
+
+
+        for material in raw_materials_obj.values():
+            obj = MaterialUsage.objects.filter(step = order_step_obj,material=material).first()
+            if obj is not None:
+                material.step_quantity = obj.quantity
+            else:
+                print(material)
+
+        # is_confirmed = check_order_confirmed(order=ret,stepNumber=1)
+        return render(request, 'edit.html', {
+            'material_usages': raw_materials_obj,
+            'user_role': user_role,
+            'can_submit': can_submit,
+            # 'is_confirmed': is_confirmed,
+            'order_id':order_id,
+            'step_number' : step_number
         })
+
+
 

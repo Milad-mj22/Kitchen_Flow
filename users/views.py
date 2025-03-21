@@ -11,6 +11,7 @@ from khayyam import JalaliDatetime
 
 from order_flow.models import MaterialUsage, OrderStep
 from users.EntryModule.EntryUtils import get_latest_exit, is_user_in , UserWorkTimeManager
+from .decorators import job_required
 from users.utils.CalulatedDistance import calculate_distance
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
@@ -190,6 +191,7 @@ def profile(request):
 
 
 # @login_required
+@job_required(['Manager', 'Admin'])
 def tools(request):
     queryset = Tools.objects.all().order_by('-title').reverse()
     print('queryset',queryset)
@@ -1991,3 +1993,9 @@ def show_menu_options(request):
     menu_names = {'پیتزا ها' :'/menu/pizza' , 'سایر محصولات' : '/menu/others'}
 
     return render(request,'users/menu_options.html',{'menu_names':menu_names})
+
+
+
+
+def no_access(request):
+    return render(request, 'users/no_access.html')
