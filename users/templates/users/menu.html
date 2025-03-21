@@ -9,11 +9,26 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
 /* تنظیمات کلی بدنه */
+
+
+@font-face {
+  font-family: 'B Zar';
+  src: url('/fonts/BZar.woff2') format('woff2'),
+       url('/fonts/BZar.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
 body {
     background-color: #111;
     color: white;
-    font-family: 'IRANSans', sans-serif;
-    overflow: auto;
+    /* font-family: 'IRANSans', sans-serif; */
+    /* font-family: 'BNazanin'; */
+    font-family: 'BZar';
+    /* overflow: auto; */
+    overflow: hidden;
     height: 100%;
     direction: rtl; /* راست‌چین کردن کل صفحه */
 }
@@ -27,7 +42,7 @@ body {
     height: 100vh;
     object-fit: cover;
     z-index: -1;
-    opacity: 40%;
+    opacity: 90%;
 }
 
 /* منو */
@@ -35,7 +50,7 @@ body {
     background: rgba(0, 0, 0, 0.7);
     padding: 20px;
     border-radius: 15px;
-    margin: 30px auto;
+    margin: 10px ;
     width: 95%;
     z-index: 1;
     overflow: auto;
@@ -58,7 +73,7 @@ body {
     background: rgba(0, 0, 0, 0.7); /* Black background with opacity */
     padding: 10px;
     border-radius:15px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -66,21 +81,21 @@ body {
 
 /* جزئیات محصول */
 .pr-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #e5f31c;
+    font-size: 40px;
+    /* font-weight: bold; */
+    color: #e5f04c;
 }
 
 .pr-price {
-    font-size: 20px;
-    color: #deebde;
+    font-size: 43px;
+    color: #f4faba;
     font-weight: bold;
 }
 
 .pr-desc {
-    font-size: 12px;
-    color: #ccc;
-    margin-top: 5px;
+    font-size: 15px;
+    color: #998e8e;
+    margin-top: 2px;
 }
 
 /* تصویر محصول */
@@ -101,13 +116,13 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     margin: 0 auto;
-    width: 90%;
-    gap: 460px; /* ایجاد فاصله مناسب بین ستون‌ها */
+    width: 95%;
+    gap: 260px; /* ایجاد فاصله مناسب بین ستون‌ها */
 }
 
 /* ستون‌ها */
 .co1, .co2 {
-    width: 48%; /* تنظیم فاصله برای جلوگیری از چسبیدن ستون‌ها */
+    width: 70%; /* تنظیم فاصله برای جلوگیری از چسبیدن ستون‌ها */
 }
 
 /* تنظیمات متن محصولات به سمت راست */
@@ -148,13 +163,17 @@ body {
 
 
 
+.menu, .main-container {
+    overflow: visible !important;
+}
+
 
 
 
 /* واکنش‌گرایی برای نمایشگرهای بزرگ */
 @media (min-width: 2000px) {
     .main-container {
-        width: 95%;
+        width: 100%;
     }
 
     .co1, .co2 {
@@ -162,15 +181,15 @@ body {
     }
 
     .pr-title {
-        font-size: 56px;
+        font-size: 90px;
     }
 
     .pr-price {
-        font-size: 60px;
+        font-size:90px;
     }
 
     .pr-desc {
-        font-size: 32px;
+        font-size: 30px;
     }
 
     .food-icon {
@@ -192,8 +211,15 @@ body {
 <body>
 
     <video autoplay=true muted loop class="back_vid">
-        <source src="{% static 'pic/back.mov' %}">
+        <source src="{% static 'pic/back_3.mp4' %}">
     </video>
+
+
+    <!-- <video autoplay muted loop class="back_vid">
+        <source src="file:///C:/videos/back.mov" type="video/mp4">
+    </video> -->
+    
+
     <div class="logo-container">
         <img src="{% static 'pic/logo.png' %}" alt="لوگو" class="logoimg">
     </div>
@@ -248,7 +274,7 @@ body {
                     {% endif %}
                     <div class="pr-up">
                         <div class="pr-details">
-                            <span class="pr-title">{{ product.name }}</span>
+                            <span class="pr-title">     {{ product.name }}         </span>
                             <span class="pr-price">
                                 {% if product.price != product.discounted_price %}
                                 
@@ -256,7 +282,7 @@ body {
                                     <span class="text-success price" id="price" style="font-weight: bold; ">{{ product.discounted_price }}</span>
                                     t
                                 {% else %}
-                                    <span id="price" class="price">{{ product.price }}</span>
+                                    <span id="price" class="price">    {{ product.price }}    </span>
                                     t
                                 {% endif %}
                             </span>
