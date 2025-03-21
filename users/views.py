@@ -191,7 +191,7 @@ def profile(request):
 
 
 # @login_required
-@job_required(['Manager', 'Admin'])
+@job_required(['Manager', 'Admin','Programmer'])
 def tools(request):
     queryset = Tools.objects.all().order_by('-title').reverse()
     print('queryset',queryset)

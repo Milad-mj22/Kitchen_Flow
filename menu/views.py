@@ -38,15 +38,15 @@ def show_menu_pizza(request):
 @login_required
 def show_menu_others(request):
         
-        pizza_single = FoodRawMaterial.objects.filter(mother__name__in=['ساندویچ','سالاد','سیب زمینی'])
-        pizza_double = FoodRawMaterial.objects.filter(
-                            mother__name__in=['همبرگر']
-                        )
+        sandwichs = FoodRawMaterial.objects.filter(mother__name__in=['ساندویچ'])
+        humbergers = FoodRawMaterial.objects.filter(mother__name__in=['همبرگر'])
+        othres = FoodRawMaterial.objects.filter(mother__name__in=['سالاد','سیب زمینی'])
+        
         # pizza_double = FoodRawMaterial.objects.filter(mother__name='پیتزا دونفره')
 
 
 
-        return render(request, 'users/menu.html',{'pizza_single':pizza_single,'pizza_double':pizza_double})
+        return render(request, 'users/menu2.html',{'sandwichs':sandwichs,'humbergers':humbergers,'others':othres})
 
 
 
