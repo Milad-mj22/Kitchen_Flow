@@ -167,6 +167,14 @@ body {
 }
 
 
+.column-title {
+    font-size: 35px;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+    color: #e5f04c;
+}
 
 
 /* واکنش‌گرایی برای نمایشگرهای بزرگ */
@@ -190,6 +198,9 @@ body {
     .pr-desc {
         font-size: 30px;
     }
+    .column-title {
+        font-size: 70px;
+    }
 
     .food-icon {
         width: 3.7vw;
@@ -205,14 +216,6 @@ body {
 
 
 
-.column-title {
-    font-size: 35px;
-    font-weight: 600;
-    text-align: center;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #ddd;
-    color: #e5f04c;
-}
 
 
     </style>
@@ -242,7 +245,7 @@ body {
             <!-- پیتزا تک نفره (سمت راست) -->
             <div class="co1">
                 
-                <h3 class="column-title">ساندویچ ها</h3>
+                <h3 class="column-title">ساندویچ</h3>
               
                 {% for product in sandwichs %}
                 <div class="pr" style="position: relative;">
@@ -311,7 +314,7 @@ body {
 
             <div class="co3">
 
-                <h3 class="column-title">همبرگرها</h3>
+                <h3 class="column-title">همبرگر</h3>
             
                 {% for product in humbergers %}
                 <div class="pr">

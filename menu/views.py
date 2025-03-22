@@ -27,10 +27,19 @@ from .signals import menu_status
 @login_required
 def show_menu_pizza(request):
         
-        pizza_single = FoodRawMaterial.objects.filter(mother__name='پیتزا تکنفره')
-        pizza_double = FoodRawMaterial.objects.filter(mother__name='پیتزا دونفره')
+        pizza_single = FoodRawMaterial.objects.filter(mother__name='پیتزا تکنفره').order_by('-priority').reverse()
+        pizza_double = FoodRawMaterial.objects.filter(mother__name='پیتزا دونفره').order_by('-priority').reverse()
 
 
+        for item in pizza_double:
+                name = item.name
+                name = name.replace('دونفره','')
+                item.name_new = name
+
+        for item in pizza_single:
+                name = item.name
+                name = name.replace('تکنفره','')
+                item.name_new = name
 
         return render(request, 'users/menu.html',{'pizza_single':pizza_single,'pizza_double':pizza_double})
 
@@ -38,11 +47,25 @@ def show_menu_pizza(request):
 @login_required
 def show_menu_others(request):
         
-        sandwichs = FoodRawMaterial.objects.filter(mother__name__in=['ساندویچ'])
-        humbergers = FoodRawMaterial.objects.filter(mother__name__in=['همبرگر'])
-        othres = FoodRawMaterial.objects.filter(mother__name__in=['سالاد','سیب زمینی'])
+        sandwichs = FoodRawMaterial.objects.filter(mother__name__in=['ساندویچ']).order_by('-priority').reverse()
+        humbergers = FoodRawMaterial.objects.filter(mother__name__in=['همبرگر']).order_by('-priority').reverse()
+        othres = FoodRawMaterial.objects.filter(mother__name__in=['سالاد','سیب زمینی']).order_by('-priority')
         
         # pizza_double = FoodRawMaterial.objects.filter(mother__name='پیتزا دونفره')
+
+        for item in humbergers:
+            name = item.name
+            name = name.replace('همبرگر','  ')
+            item.name = name
+
+
+        for item in sandwichs:
+            name = item.name
+            name = name.replace('ساندویچ','  ')
+            item.name = name
+
+        
+
 
 
 
