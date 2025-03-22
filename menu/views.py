@@ -47,15 +47,9 @@ def show_menu_pizza(request):
 @login_required
 def show_menu_others(request):
         
-<<<<<<< HEAD
-        sandwichs = FoodRawMaterial.objects.filter(mother__name__in=['ساندویچ'])
-        humbergers = FoodRawMaterial.objects.filter(mother__name__in=['همبرگر'])
-        othres = FoodRawMaterial.objects.filter(mother__name__in=['سالاد','سیب زمینی'])
-=======
         sandwichs = FoodRawMaterial.objects.filter(mother__name__in=['ساندویچ']).order_by('-priority').reverse()
         humbergers = FoodRawMaterial.objects.filter(mother__name__in=['همبرگر']).order_by('-priority').reverse()
         othres = FoodRawMaterial.objects.filter(mother__name__in=['سالاد','سیب زمینی']).order_by('-priority')
->>>>>>> 281a5a90a3d4a04ffeb5a4cb0c1de392da4b9813
         
         # pizza_double = FoodRawMaterial.objects.filter(mother__name='پیتزا دونفره')
 
@@ -65,8 +59,6 @@ def show_menu_others(request):
             item.name = name
 
 
-<<<<<<< HEAD
-=======
         for item in sandwichs:
             name = item.name
             name = name.replace('ساندویچ','  ')
@@ -77,7 +69,6 @@ def show_menu_others(request):
 
 
 
->>>>>>> 281a5a90a3d4a04ffeb5a4cb0c1de392da4b9813
         return render(request, 'users/menu2.html',{'sandwichs':sandwichs,'humbergers':humbergers,'others':othres})
 
 
