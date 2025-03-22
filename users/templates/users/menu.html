@@ -94,7 +94,7 @@ body {
 
 
 .pr-desc {
-    font-size: 15px;
+    font-size: 18px;
     color: #998e8e;
     margin-top: 2px;
 }
@@ -261,7 +261,7 @@ body {
                     {% endif %}
                     <div class="pr-up">
                         <div class="pr-details">
-                            <span class="pr-title">{{ product.name }}</span>
+                            <span class="pr-title">{{ product.name_new }}</span>
                             <span class="pr-price">
                                 {% if product.price != product.discounted_price %}
                                     <span class="price" style="text-decoration: line-through; color: #8d7e7e;">{{ product.price }}</span>
@@ -283,7 +283,11 @@ body {
             <div class="co2">
                 <h3 class="column-title">پیتزا دو نفره ایتالیایی</h3>
 
+<<<<<<< HEAD
             
+=======
+    
+>>>>>>> 281a5a90a3d4a04ffeb5a4cb0c1de392da4b9813
                 {% for product in pizza_double %}
 
                 <div class="pr">
@@ -294,7 +298,7 @@ body {
                     {% endif %}
                     <div class="pr-up">
                         <div class="pr-details">
-                            <span class="pr-title">     {{ product.name }}         </span>
+                            <span class="pr-title">     {{ product.name_new }}         </span>
                             <span class="pr-price">
                                 {% if product.price != product.discounted_price %}
                                 
