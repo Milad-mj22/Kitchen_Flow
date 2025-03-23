@@ -188,19 +188,23 @@ body {
     }
 
     .pr-title {
-        font-size: 90px;
+        font-size: 70px;
     }
 
     .pr-price {
-        font-size:90px;
+        font-size:70px;
     }
 
     .pr-desc {
-        font-size: 30px;
+        font-size:30px;
+        font-weight: bold;
+
     }
+
     .column-title {
-        font-size: 70px;
+        font-size: 60px;
     }
+
 
     .food-icon {
         width: 3.7vw;
@@ -259,7 +263,7 @@ body {
                     {% endif %}
                     <div class="pr-up">
                         <div class="pr-details">
-                            <span class="pr-title">{{ product.name }}</span>
+                            <span class="pr-title">{{ product.name_new }}</span>
                             <span class="pr-price">
                                 {% if product.price != product.discounted_price %}
                                     <span class="price" style="text-decoration: line-through; color: #8d7e7e;">{{ product.price }}</span>
@@ -325,7 +329,7 @@ body {
                     {% endif %}
                     <div class="pr-up">
                         <div class="pr-details">
-                            <span class="pr-title">     {{ product.name }}         </span>
+                            <span class="pr-title">     {{ product.name_new }}         </span>
                             <span class="pr-price">
                                 {% if product.price != product.discounted_price %}
                                 

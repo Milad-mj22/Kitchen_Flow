@@ -1,3 +1,8 @@
+
+openssl ecparam -name prime256v1 -genkey -noout -out private_key.pem
+openssl ec -in private_key.pem -pubout -out public_key.pem
+
+
 # Django-Dorsa-Tools
 This web app has been developed using the popular Django framework and Bootstrap for the frontend. My motivation to build this project is so that I can learn about Django and tighten up my skills. This mini-app can be easily integrated into a bigger system project that needs to have a registration and login system.
 

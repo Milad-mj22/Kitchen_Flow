@@ -38,6 +38,8 @@ SECRET_KEY = str(os.getenv('SECRET_KEY'))
 DEBUG = True
 
 
+
+
 MEDIA_URL = '/media/'  # URL for accessing media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory where uploaded files are stored
 
@@ -46,10 +48,7 @@ ALLOWED_HOSTS = ['37.191.77.130','192.168.1.107','172.20.10.4','127.0.0.1','0.0.
 
 
 
-# CSRF_TRUSTED_ORIGINS = ["https://seketalamanager.ir"]
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+
 
 
 # Application definition
@@ -175,7 +174,16 @@ MEDIA_URL = '/media/'
 
 
 # Define the directory where static files will be collected
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
+# settings.py
+
+# STATIC_URL = '/static/'
+
+# Ensure that this path is where your static files will be collected
+STATIC_ROOT = r'C:\Users\Administrator\Desktop\Kitchen_Flow\staticfiles'
+
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
@@ -215,3 +223,18 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
 }
+
+
+# SECURE_SSL_REDIRECT = True
+# SECURE_HSTS_SECONDS = 31536000  # 1 year
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
+# SECURE_SSL_REDIRECT = True
+# SECURE_HSTS_SECONDS = 3600  # 1 hour
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
