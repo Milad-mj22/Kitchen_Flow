@@ -1,5 +1,6 @@
-from diffusers import StableDiffusionPipeline
+from pywebpush import generate_vapid_keys
 
-# دانلود وزن Stable Diffusion
-model = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-5")
-model.save_pretrained("./path_to_save")
+public_key, private_key = generate_vapid_keys()
+
+print("Public Key:", public_key)
+print("Private Key:", private_key)

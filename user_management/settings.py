@@ -35,7 +35,7 @@ django.utils.encoding.smart_text = smart_str
 SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
 MEDIA_URL = '/media/'  # URL for accessing media files
@@ -57,6 +57,7 @@ ALLOWED_HOSTS = ['37.191.77.130','192.168.1.107','172.20.10.4','127.0.0.1','0.0.
 INSTALLED_APPS = [
     'daphne',
     'channels',
+    'webpush',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
