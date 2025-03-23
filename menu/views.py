@@ -24,7 +24,7 @@ from .signals import menu_status
 
 
 
-@login_required
+# @login_required
 def show_menu_pizza(request):
         
         pizza_single = FoodRawMaterial.objects.filter(mother__name='پیتزا تکنفره').order_by('-priority').reverse()
@@ -44,7 +44,7 @@ def show_menu_pizza(request):
         return render(request, 'users/menu.html',{'pizza_single':pizza_single,'pizza_double':pizza_double})
 
 
-@login_required
+# @login_required
 def show_menu_others(request):
         
         sandwichs = FoodRawMaterial.objects.filter(mother__name__in=['ساندویچ']).order_by('-priority').reverse()
@@ -56,13 +56,13 @@ def show_menu_others(request):
         for item in humbergers:
             name = item.name
             name = name.replace('همبرگر','  ')
-            item.name = name
+            item.name_new = name
 
 
         for item in sandwichs:
             name = item.name
             name = name.replace('ساندویچ','  ')
-            item.name = name
+            item.name_new = name
 
         
 
