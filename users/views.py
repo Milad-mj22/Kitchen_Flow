@@ -2119,19 +2119,3 @@ def no_access(request):
     return render(request, 'users/no_access.html')
 
 
-
-
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import SMS
-import json
-
-@csrf_exempt
-def receive_sms(request):
-    sender = request.GET.get("sender", "Unknown")
-    message = request.GET.get("message", "")
-
-    if message:
-        SMS.objects.create(sender=sender, message=message)
-        return JsonResponse({"status": "success"}, status=201)
-    return JsonResponse({"status": "error", "message": "Message is empty"}, status=400)

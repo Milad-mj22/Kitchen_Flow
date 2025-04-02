@@ -1,7 +1,6 @@
 {% extends "users/base.html" %}
-{% block title %} Home Page {% endblock title%}
+{% block title %} Home Page {% endblock title %}
 {% block content %}
-
 
 <style>
     .jumbotron {
@@ -10,7 +9,7 @@
 </style>
 
 <div class="jumbotron">
-    <h1 class="display-4"><center>خوش آمدید, {{user.profile.first_name|default:'مهمان'}}</center></h1>
+    <h1 class="display-4"><center>خوش آمدید, {{ user.profile.first_name|default:'مهمان' }}</center></h1>
     <p class="lead"><center>این سایت مختص <b>شرکت سکه طلا</b> با هدف استفاده از ابزار های توسعه یافته توسط شرکت میباشد </center></p>
     <hr class="my-4">
     <p class="lead"><center>
@@ -18,18 +17,87 @@
             <form id="logout-form" method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary btn-lg">خروج</button>
-                <!-- <a class="btn btn-primary btn-lg" href="/logout" role="button">Logout</a> -->
-
             </form>
-        {% else %}
-            <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button"> ورود</center></a>
-        {% endif %}
-    
+            
+            <!-- Subscribe Button -->
+            <button id="subscribe-btn" class="btn btn-success btn-lg">فعال‌سازی اعلان‌ها</button>
 
-    </p>
-</ceneter>
+            <!-- Send Notification Button -->
+            <button id="send-notif-btn" class="btn btn-warning btn-lg">ارسال اعلان تستی</button>
+
+
+
+        {% else %}
+            <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">ورود</a>
+        {% endif %}
+    </center></p>
 </div>
 
+<!-- Include the push notification script -->
+<script>
+const vapidPublicKey = "{{ vapid_public_key }}";  // VAPID public key passed from Django
 
+document.getElementById('subscribe-btn')?.addEventListener('click', async () => {
+    if (!('serviceWorker' in navigator)) {
+        alert("مرورگر شما از اعلان‌ها پشتیبانی نمی‌کند.");
+        return;
+    }
+
+    try {
+        const registration = await navigator.serviceWorker.register('static/js/service-worker.js');
+        const permission = await Notification.requestPermission();
+        
+        if (permission !== "granted") {
+            alert("لطفاً مجوز ارسال اعلان‌ها را بدهید.");
+            return;
+        }
+
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: vapidPublicKey
+        });
+
+        // Send subscription to the server
+        await fetch('/save-subscription/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(subscription)
+        });
+
+        alert("اشتراک اعلان‌ها فعال شد!");
+
+    } catch (error) {
+        console.error("Subscription failed:", error);
+        alert("مشکلی در فعال‌سازی اعلان‌ها پیش آمد.");
+    }
+});
+
+
+
+
+// Send test notification
+
+document.getElementById('send-notif-btn')?.addEventListener('click', async () => {
+    try {
+        await fetch('/send-test-notification/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        });
+        alert("اعلان تستی ارسال شد!");
+    } catch (error) {
+        console.error("Failed to send notification:", error);
+        alert("مشکلی در ارسال اعلان پیش آمد.");
+    }
+});
+
+
+
+
+</script>
 
 {% endblock content %}
