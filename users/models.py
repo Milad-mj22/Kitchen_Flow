@@ -93,7 +93,7 @@ class Post(models.Model):
 
 class Tools(models.Model):
     title = models.CharField(max_length=200, unique=True)
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.CharField(max_length=300, unique=True) 
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     class Meta:
