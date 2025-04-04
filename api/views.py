@@ -61,10 +61,23 @@ def get_last_sms(request, count):
 
 
 def get_total_deposit(request):
-    today = timezone.now().date()
-    today_sms = SMS.objects.filter(received_at__date=today)  # Adjust timestamp field
-    total_sum = 0
+    now = timezone.now()
+    # 🟢 مقدار ساعت را برای دیباگ به‌صورت دستی تغییر دهید
 
+
+    # Determine the start of the custom day (2:00 AM today)
+    if now.hour < 2:
+        start_time = (now - timezone.timedelta(days=1)).replace(hour=2, minute=0, second=0, microsecond=0)
+    else:
+        start_time = now.replace(hour=2, minute=0, second=0, microsecond=0)
+    
+    # End time is 24 hours after the start time
+    end_time = start_time + timezone.timedelta(days=1)
+
+    # Filter SMS records in the range from 2 AM today to 2 AM the next day
+    today_sms = SMS.objects.filter(received_at__gte=start_time, received_at__lt=end_time)
+
+    total_sum = 0
     for sms in today_sms:
         match = re.search(r'واریز([\d,]+)', sms.message)
         if match:
