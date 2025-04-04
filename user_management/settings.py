@@ -54,6 +54,7 @@ ALLOWED_HOSTS = ['37.191.77.130','192.168.1.107','172.20.10.4','127.0.0.1','0.0.
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.humanize',
     'daphne',
     'channels',
     'webpush',

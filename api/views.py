@@ -5,7 +5,7 @@ from django.shortcuts import render
 # api/views.py
 from django.http import JsonResponse
 from .signals import message_signal
-
+from .utils import get_account_no
 
 
 def home(request):
@@ -16,7 +16,7 @@ def home(request):
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import SMS
+from .models import SMS, BankAccount
 import json
 
 @csrf_exempt
@@ -85,3 +85,50 @@ def get_total_deposit(request):
             total_sum += amount
 
     return JsonResponse({"success": True, "total": total_sum})
+
+
+
+def account_list(request):
+    accounts = BankAccount.objects.all()
+    selected_account = None
+    total_deposit = 0
+    sms_count = 0
+    start_date = None
+    end_date = None
+
+    if request.method == "GET" and "account" in request.GET:
+        account_number = request.GET.get("account")
+        start_date = request.GET.get("start_date")
+        end_date = request.GET.get("end_date")
+
+        try:
+            selected_account = BankAccount.objects.get(account_number=account_number)
+            
+            # فیلتر پیامک‌ها بر اساس شماره حساب و بازه زمانی
+            filtered_sms = SMS.objects.filter(
+                message__contains=f"حساب{selected_account.account_number}",
+                received_at__date__gte=start_date,
+                received_at__date__lte=end_date
+            )
+
+            # شمارش تعداد پیامک‌های واریز
+            sms_count = filtered_sms.count()
+
+            # محاسبه مجموع واریزها
+            for sms in filtered_sms:
+                match = re.search(r'واریز([\d,]+)', sms.message)
+                if match:
+                    amount = int(match.group(1).replace(',', ''))
+                    total_deposit += amount
+
+        except BankAccount.DoesNotExist:
+            selected_account = None
+
+    return render(request, "account_list.html", {
+        "accounts": accounts,
+        "selected_account": selected_account,
+        "total_deposit": total_deposit,
+        "sms_count": sms_count,
+        "start_date": start_date,
+        "end_date": end_date,
+    })
