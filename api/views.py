@@ -1,3 +1,5 @@
+from django.utils import timezone
+import re
 from django.shortcuts import render
 # Create your views here.
 # api/views.py
@@ -55,3 +57,18 @@ def get_last_sms(request, count):
     except Exception as e:
         print(f"Error fetching messages: {e}")
         return JsonResponse({'error': 'Error fetching messages'}, status=500)
+    
+
+
+def get_total_deposit(request):
+    today = timezone.now().date()
+    today_sms = SMS.objects.filter(received_at__date=today)  # Adjust timestamp field
+    total_sum = 0
+
+    for sms in today_sms:
+        match = re.search(r'واریز([\d,]+)', sms.message)
+        if match:
+            amount = int(match.group(1).replace(',', ''))
+            total_sum += amount
+
+    return JsonResponse({"success": True, "total": total_sum})

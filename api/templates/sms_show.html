@@ -125,11 +125,22 @@ h1.page-title {
     </div> -->
     <!-- <h2>Real-Time SMS Messages</h2> -->
     <div class="container">
+
+
+
         <div class="column" id="liveMessages">
             <h3>Live Messages</h3>
             <div id="messages">Loading messages...</div>
         </div>
         <div class="column">
+
+
+            <!-- <div class="column"> -->
+                <h3>Get Total Deposit</h3>
+                <button onclick="getTotalDeposit()">Get Sum</button>
+                <div id="totalDeposit" style="margin-top: 10px;">Total Deposit: </div>
+            <!-- </div> -->
+
             <h3>Load Previous Messages</h3>
             <input type="number" id="smsCount" value=10>
             <button onclick="loadPreviousMessages()">Load Messages</button>
@@ -191,6 +202,32 @@ h1.page-title {
                     previousMessagesContainer.innerHTML = "Error loading messages.";
                 });
         }
+
+    
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function getTotalDeposit() {
+        fetch('/api/get_total_deposit/')
+            .then(response => response.json())
+            .then(data => {
+                const totalDepositDiv = document.getElementById("totalDeposit");
+                if (data.success) {
+                    const formattedTotal = formatNumber(data.total);
+                    totalDepositDiv.innerHTML = `Total Deposit: ${formattedTotal}`;
+                } else {
+                    totalDepositDiv.innerHTML = "Error calculating deposit.";
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching total deposit:", error);
+                totalDepositDiv.innerHTML = "Error calculating deposit.";
+            });
+    }
+
+
+
     </script>
 </body>
 
