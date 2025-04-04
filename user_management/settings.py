@@ -44,7 +44,7 @@ MEDIA_URL = '/media/'  # URL for accessing media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory where uploaded files are stored
 
 
-ALLOWED_HOSTS = ['37.191.77.130','192.168.1.107','172.20.10.4','127.0.0.1','0.0.0.0','192.168.1.30','94.183.166.188','192.168.1.211','37.255.213.180',"seketalamanager.ir", "www.seketalamanager.ir", 'go.microsoft.com',"*"]
+ALLOWED_HOSTS = ['37.191.77.130','192.168.1.107','172.20.10.4','127.0.0.1','0.0.0.0','192.168.1.30','94.183.166.188','192.168.1.211','37.255.213.180',"seketalamanager.ir", "www.seketalamanager.ir", "*"]
 
 
 
@@ -56,6 +56,7 @@ ALLOWED_HOSTS = ['37.191.77.130','192.168.1.107','172.20.10.4','127.0.0.1','0.0.
 INSTALLED_APPS = [
     'daphne',
     'channels',
+    'webpush',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -70,6 +71,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'menu',
     'order_flow',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -224,16 +226,10 @@ CHANNEL_LAYERS = {
 }
 
 
-# SECURE_SSL_REDIRECT = True
-# SECURE_HSTS_SECONDS = 31536000  # 1 year
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
-# SECURE_SSL_REDIRECT = True
-# SECURE_HSTS_SECONDS = 3600  # 1 hour
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_HSTS_PRELOAD = True
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
-# SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE9XFYH3gBCf5OXAAnQpt8Nx4yXQEa27OwDxFTMUMVy2dEx07k0tQE8DCLG6460teFdvAi1ZyNcZ0sixG/xvlvGA==",
+    "VAPID_PRIVATE_KEY": "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgsPVrMCpQKot7MP3vs1xYUGlMblgbsNpVg",
+    "VAPID_ADMIN_EMAIL": "m.moltaji@yahoo.com",
+}

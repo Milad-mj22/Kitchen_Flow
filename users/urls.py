@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import error_page, home, material_composition_view, no_access, profile, RegisterView, show_menu_options,tools \
+from .views import error_page, home, material_composition_view, no_access, profile, RegisterView, save_subscription, send_notification, send_test_notification, show_menu_options,tools \
         ,my_orders,add_raw_material,post_edit_quil\
         ,create_order,add_mother_material,show_order,snapp,show_restaurant_list,\
         restaurant_food_list,add_restaurant,print_order,foodRawMaterials,addfoodrawmaterial,show_food_material,night_food_order,\
@@ -82,7 +82,8 @@ urlpatterns = [
     #/////////////////////////
     path('no_access/', no_access, name='no_access'),
 
-
-
-
+    path("save-subscription/", save_subscription, name="save_subscription"),
+    path("send-notification/<int:user_id>/", send_notification, name="send_notification"),
+    path('send-test-notification/', send_test_notification, name='send_test_notification'),
+    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

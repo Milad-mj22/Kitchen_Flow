@@ -11,6 +11,7 @@ from khayyam import JalaliDatetime
 
 from order_flow.models import MaterialUsage, OrderStep
 from users.EntryModule.EntryUtils import get_latest_exit, is_user_in , UserWorkTimeManager
+from users.utils.utils import send_push_notification
 from .decorators import job_required
 from users.utils.CalulatedDistance import calculate_distance
 
@@ -30,7 +31,7 @@ from .models import FoodRawMaterial
 from .models import Warehouse
 from .models import mother_food as MotherFood
 from .models import EntryExitLog
-
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
 import os
 from datetime import datetime, timezone
@@ -41,13 +42,13 @@ import json
 from decimal import Decimal
 from users import models
 from django.http import JsonResponse
-
+from django.conf import settings
 from django.db.models import Sum, Prefetch, F, DecimalField, Q  # Import DecimalField
 from django.db.models.functions import Coalesce
 import time
 from persiantools.jdatetime import JalaliDate
-
-
+from urllib.parse import urlparse
+from pywebpush import webpush, WebPushException
 import base64
 from django.core.files.base import ContentFile
 
@@ -71,12 +72,21 @@ class CustomLogoutView(LogoutView):
 
 
 def home(request):
+    # Convert the VAPID public key to Base64 URL format
+    # def to_base64url(b64):
+    #     return base64.urlsafe_b64encode(base64.b64decode(b64)).decode("utf-8").rstrip("=")
+
+    # # vapid_public_key = to_base64url(settings.VAPID_PUBLIC_KEY)
+    # vapid_public_key = settings.VAPID_PUBLIC_KEY
+    # context = {
+    #     "vapid_public_key": vapid_public_key  # Replace with your actual VAPID public key
+    # }
+
     return render(request, 'users/home.html')
 
 
 class RegisterView(View):
-    a = jobs.objects.all()
-    print(a)
+
     form_class = RegisterForm
     initial = {'key': 'value'}
     template_name = 'users/register.html'
@@ -108,6 +118,7 @@ class RegisterView(View):
             b.job_position_id =int(request.POST['job_position'])
             b.save()
             username = form.cleaned_data.get('username')
+
             messages.success(request, f'Account created for {username}')
 
             return redirect(to='login')
@@ -115,6 +126,113 @@ class RegisterView(View):
         return render(request, self.template_name, {'form': form})
 
 
+def send_notification(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        send_push_notification(user, "شما یک پیام جدید دارید!")
+        return JsonResponse({"message": f"Notification sent to {user.username}"})
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+
+
+@login_required
+def send_push_notification(request):
+    from webpush import send_user_notification
+    payload = {
+        "head": "New Notification",
+        "body": "This is a test notification!",
+        "icon": "https://your-site.com/static/icon.png",
+        "url": "https://your-site.com/",
+    }
+    send_user_notification(user=request.user, payload=payload, ttl=1000)
+    return JsonResponse({"message": "Notification sent"})
+
+
+@csrf_exempt
+def send_test_notification(request):
+    if request.method == "POST":
+        try:
+            user_id =request.user.id
+            user = User.objects.get(id=user_id)
+            profile = Profile.objects.get(user=user)# Get the latest subscription for testing
+            if not profile or not profile.push_endpoint:
+                return JsonResponse({"error": "No valid subscription found"}, status=400)
+
+            # Extract push service URL origin (scheme + host + port if exists)
+            endpoint_origin = f"{urlparse(profile.push_endpoint).scheme}://{urlparse(profile.push_endpoint).netloc}"
+
+            payload = json.dumps({
+                "title": "اعلان تستی",
+                "body": "این یک پیام آزمایشی است.",
+                "icon": "/static/img/notification-icon.png"
+            })
+
+            print("Push Endpoint:", profile.push_endpoint)
+            print("P256DH Key:", profile.push_p256dh)
+            print("Auth Key:", profile.push_auth)
+
+
+
+            # Prepare the subscription info
+            subscription_info = {
+                "endpoint": profile.push_endpoint,
+                "keys": {
+                    "p256dh": profile.push_p256dh,
+                    "auth": profile.push_auth
+                },
+            }
+
+            # Prepare the VAPID claims
+            vapid_claims = {
+                "sub": "mailto:m.moltaji@yahoo.com",  # Update with your email
+            }
+
+            # Send push notification
+            response = webpush(
+                subscription_info=subscription_info,
+                data='test',
+                vapid_private_key=settings.VAPID_PRIVATE_KEY,  # Ensure this is set in your settings
+                vapid_claims=vapid_claims,
+                verbose=True  # You can set to True for debugging
+            )
+            
+            print(f"Notification sent to {user.username}. Response: {response.status_code}")
+            print(f"Notification sent to {user.username}")
+            return JsonResponse({"message": "Notification sent successfully!"})
+        except WebPushException as ex:
+            import traceback
+            print("WebPushException:", ex)
+            print("Traceback:", traceback.format_exc())  
+
+            if ex.response:
+                print("Response Status:", ex.response.status_code)
+                print("Response Headers:", ex.response.headers)
+                print("Response Body:", ex.response.text)  # This will show the exact error message from the push server
+
+            return JsonResponse({"error": f"Failed to send notification: {str(ex)}"}, status=500)
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+@csrf_exempt
+def save_subscription(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        # user_id = data.get("user_id")
+        user_id =request.user.id
+
+        try:
+            user = User.objects.get(id=user_id)
+            profile = Profile.objects.get(user=user)
+            profile.push_endpoint = data["endpoint"]
+            profile.push_p256dh = data["keys"]["p256dh"]
+            profile.push_auth = data["keys"]["auth"]
+            profile.save()
+
+            return JsonResponse({"message": "Subscription saved successfully!"})
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+        
+        
 # Class based view that extends from the built in login view to add a remember me functionality
 class CustomLoginView(LoginView):
     form_class = LoginForm
@@ -1999,3 +2117,5 @@ def show_menu_options(request):
 
 def no_access(request):
     return render(request, 'users/no_access.html')
+
+

@@ -41,6 +41,12 @@ class Profile(models.Model):
     # job_position = models.CharField(max_length=400)
     job_position = models.ForeignKey(jobs, on_delete= models.CASCADE,related_name='job_position',default=1,blank=True,null=True)
 
+    # فیلدهای مربوط به پوش نوتیفیکیشن
+    push_endpoint = models.TextField(blank=True, null=True)
+    push_p256dh = models.TextField(blank=True, null=True)
+    push_auth = models.TextField(blank=True, null=True)
+
+
 
     def __str__(self):
         return self.user.username
@@ -87,7 +93,7 @@ class Post(models.Model):
 
 class Tools(models.Model):
     title = models.CharField(max_length=200, unique=True)
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.CharField(max_length=200, unique=True)
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     class Meta:
@@ -557,3 +563,7 @@ class RemainingMaterialsUsage(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.used_at}"
+
+
+
+

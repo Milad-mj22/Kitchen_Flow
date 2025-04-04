@@ -38,13 +38,7 @@ class MenuWebSocketConsumer(AsyncWebsocketConsumer):
 def handle_plc_connected(sender, **kwargs):
     menu_status = kwargs.get("values", {})
 
-    # menu_status =  menu_status.get('data',False)
-
-
-
-
-
-
+    # menu_status =  menu_status.get('data',False
 
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
