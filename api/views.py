@@ -26,6 +26,8 @@ def receive_sms(request):
 
     if message:
         SMS.objects.create(sender=sender, message=message)
+        # Replace the number that comes after "مانده"
+        message = clean_message(message=message)
         content = {'sender':sender,'message':message}
         print(content)
         message_signal.send(sender=None, values = content)
@@ -41,6 +43,14 @@ def sms_page(request):
 
 
 
+def clean_message(message):
+    # Replace the number that comes after "مانده"
+    try:
+        cleaned_message = re.sub(r"(مانده)\d[\d,]*", r"\1", message)
+    except:
+        cleaned_message = message
+    return cleaned_message
+
 
 def get_last_sms(request, count):
     try:
@@ -48,7 +58,7 @@ def get_last_sms(request, count):
         data = [
             {
                 'sender': sms.sender,
-                'message': sms.message,
+                'message': clean_message(sms.message),
                 'received_at': sms.received_at.strftime('%Y-%m-%d %H:%M:%S'),
             }
             for sms in sms_list

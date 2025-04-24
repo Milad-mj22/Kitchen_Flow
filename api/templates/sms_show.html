@@ -129,21 +129,21 @@ h1.page-title {
 
 
         <div class="column" id="liveMessages">
-            <h3>Live Messages</h3>
-            <div id="messages">Loading messages...</div>
+            <h3>پیام های در لحظه</h3>
+            <div id="messages">بارگزاری پیام ها</div>
         </div>
         <div class="column">
 
 
             <!-- <div class="column"> -->
-                <h3>Get Total Deposit</h3>
-                <button onclick="getTotalDeposit()">Get Sum</button>
-                <div id="totalDeposit" style="margin-top: 10px;">Total Deposit: </div>
+                <!-- <h3>Get Total Deposit</h3> -->
+                <button onclick="getTotalDeposit()">مجموع روزانه</button>
+                <div id="totalDeposit" style="margin-top: 10px;">جمع کل </div>
             <!-- </div> -->
 
-            <h3>Load Previous Messages</h3>
+            <h3>تعداد پیام های اخیر جهت نمایش</h3>
             <input type="number" id="smsCount" value=10>
-            <button onclick="loadPreviousMessages()">Load Messages</button>
+            <button onclick="loadPreviousMessages()">بارگزاری پیام ها</button>
             <div id="previousMessages"></div>
         </div>
     </div>
@@ -155,7 +155,7 @@ h1.page-title {
         var socket = new WebSocket("ws://" + window.location.host + "/ws/api_updates/");
 
         socket.onopen = function () {
-            liveMessagesContainer.innerHTML = "Connected Server";
+            liveMessagesContainer.innerHTML = "سرور متصل";
             liveMessagesContainer.classList.add('connected');  // Add the styling class
         };
 
