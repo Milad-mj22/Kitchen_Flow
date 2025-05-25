@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'menu',
     'order_flow',
     'api',
+    'SocialApps',
 ]
 
 MIDDLEWARE = [

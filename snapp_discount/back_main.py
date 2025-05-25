@@ -16,17 +16,34 @@ CACHE_PATH = 'cache/'
 
 
 class web_driver():
-    def __init__(self,timeout=10) -> None:
+    def __init__(self,timeout=10,socaial_webDrive=False,session_dir='') -> None:
         self.timeout = timeout
+        self.socaial_webDrive = socaial_webDrive
+        self.session_dir = session_dir
         self.create_driver()
         
 
     def create_driver(self):
-        options = webdriver.ChromeOptions()
-        options.add_experimental_option("detach", True)
-        options.add_argument("--start-maximized")
-        self.driver = webdriver.Chrome('./chromedriver',options=options)
+
      
+        if self.socaial_webDrive:
+
+
+            chrome_options = Options()
+            chrome_options.add_argument(f"--user-data-dir={os.path.abspath(self.session_dir)}")
+            chrome_options.add_argument("--window-size=1920x1080")
+            chrome_options.add_argument("--disable-gpu")
+            chrome_options.add_argument("--no-sandbox")
+
+            self.driver = webdriver.Chrome(options=chrome_options)
+        
+        else:
+
+            options = webdriver.ChromeOptions()
+            options.add_experimental_option("detach", True)
+            options.add_argument("--start-maximized")
+            self.driver = webdriver.Chrome('./chromedriver',options=options)
+
 
     def wait(self,auto=True,time=0):
         if auto:

@@ -1,0 +1,16 @@
+{
+    "server_command": "python manage.py runsssserver",
+    "windows": [
+      {
+        "main_url": "http://seketalamanager.ir:8000/menu/pizza",
+        "local_url": "http://127.0.0.1:8000/page1",
+        "title": "Window 1"
+      },
+      {
+        "main_url": "http://192.168.1.30:8000/menu/others",
+        "local_url": "http://127.0.0.1:8000/page2",
+        "title": "Window 2"
+      }
+    ]
+  }
+  

@@ -31,11 +31,12 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'),
          name='password_reset_complete'),
 
-    path('password-change/', ChangePasswordView.as_view(), name='password_change'),
-    path('menu/', include('menu.urls'), name='password_change'),
-    path('order_flow/', include('order_flow.urls'), name='password_change'),
-    path('api/', include('api.urls')),  # Add this line
-    path('', include('users.urls')),
+     path('password-change/', ChangePasswordView.as_view(), name='password_change'),
+     path('menu/', include('menu.urls'), name='password_change'),
+     path('order_flow/', include('order_flow.urls'), name='password_change'),
+     path('api/', include('api.urls')),  # Add this line
+     path('SocialApps/', include('SocialApps.urls')),  # ← add this line
+     path('', include('users.urls')),
 
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),
 
