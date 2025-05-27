@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404
 # myapp/views.py
 from django.http import HttpResponse
 from users.models import User
-from .WhatsApp import start_whatsapp_session
+from .WhatsApp import collect_messages_from_all_chats, start_whatsapp_session
 
 
 def home(request):
@@ -33,3 +33,13 @@ def image_to_base64(image_path):
             return f"data:image/png;base64,{encoded_string}"
     except:
         return False
+    
+
+
+
+def WA_get_messages(request):
+    user_id = request.user.id
+    messages = collect_messages_from_all_chats(user_id)
+    return HttpResponse("Hello from my app!")
+    
+

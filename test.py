@@ -53,6 +53,9 @@ def start_whatsapp_session(user_id):
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
+    # chrome_options.add_argument("--headless")  # Old mode
+    chrome_options.add_argument("--headless=new")
+
 
     driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://web.whatsapp.com/")
