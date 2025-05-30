@@ -235,3 +235,11 @@ WEBPUSH_SETTINGS = {
     "VAPID_PRIVATE_KEY": "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgsPVrMCpQKot7MP3vs1xYUGlMblgbsNpVg",
     "VAPID_ADMIN_EMAIL": "m.moltaji@yahoo.com",
 }
+
+
+# user_management/settings.py
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TASK_SERIALIZER = 'json'

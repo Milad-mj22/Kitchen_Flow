@@ -315,3 +315,42 @@ class MaterialCompositionForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Dynamic fields based on ingredients, for example:
         self.fields['ingredient'].queryset = raw_material.objects.all()  # Populate ingredient choices
+
+
+
+
+
+# forms.py
+from django import forms
+from .models import Buyer
+
+
+
+class BuyerForm(forms.ModelForm):
+    class Meta:
+        model = Buyer
+        fields = ['first_name','last_name', 'phone_number', 'national_code', 'province', 'city', 'address', 'details', 'nationality']
+        labels = {
+            'first_name': 'نام ',
+            'last_name': 'نام خانوادگی',
+            'phone_number': 'شماره تماس',
+            'national_code': 'کد ملی',
+            'province': 'استان',
+            'city': 'شهر',
+            'address': 'آدرس',
+            'details': 'توضیحات تکمیلی',
+            'nationality': 'ملیت',
+        }
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+            'details': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+        }
+
+
+
+
+from django import forms
+
+class BuyerLoginForm(forms.Form):
+    name = forms.CharField(label="نام", max_length=100)
+    phone = forms.CharField(label="شماره تلفن", max_length=20)

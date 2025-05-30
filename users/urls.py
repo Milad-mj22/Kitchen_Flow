@@ -1,15 +1,16 @@
 from django.urls import path
-from .views import error_page, home, material_composition_view, no_access, profile, RegisterView, save_subscription, send_notification, send_test_notification, show_menu_options,tools \
+from .views import buyer_dashboard, buyer_dashboard_view, buyer_login_view, buyer_logout_view, confirm_purchase_view, error_page, home, material_composition_view, no_access, profile, RegisterView, save_subscription, send_notification, send_test_notification, show_menu_options,tools \
         ,my_orders,add_raw_material,post_edit_quil\
         ,create_order,add_mother_material,show_order,snapp,show_restaurant_list,\
         restaurant_food_list,add_restaurant,print_order,foodRawMaterials,addfoodrawmaterial,show_food_material,night_food_order,\
         load_temp,CustomLogoutView,add_store,success_page,\
         show_store,submit_data,show_test,take_store,confrim_take_store,log_view_store,\
-        register_entry,register_exit,get_allowed_locations,histoty_entry,update_prices, show_night_order_material
+        register_entry,register_exit,get_allowed_locations,histoty_entry,update_prices, show_night_order_material,\
+        add_buyer,edit_buyer,buyer_list
 
 from menu.views import set_sold_out
         
-
+from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -86,4 +87,24 @@ urlpatterns = [
     path("send-notification/<int:user_id>/", send_notification, name="send_notification"),
     path('send-test-notification/', send_test_notification, name='send_test_notification'),
     
+
+
+
+
+
+    path('buyers/', buyer_list, name='buyer_list'),
+    path('buyers/add/', add_buyer, name='add_buyer'),
+    path('buyers/edit/<int:pk>/', edit_buyer, name='edit_buyer'),
+    path('buyers/dashboard/', buyer_dashboard, name='buyer_dashboard'),
+    # path('buyers/login/', auth_views.LoginView.as_view(template_name='Buyer/buyer_login.html'), name='login'),
+    # path('buyers/logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+
+
+    path('buyers/login/', buyer_login_view, name='buyer_login'),
+    path('buyers/dashboard_person/', buyer_dashboard_view, name='buyer_dashboard'),
+    path('buyers/logout/',buyer_logout_view, name='buyer_logout'),
+    path('buyers/confirm/<int:log_id>/', confirm_purchase_view, name='confirm_purchase'),
+
+
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

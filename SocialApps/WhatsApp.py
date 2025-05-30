@@ -8,6 +8,8 @@ from selenium.webdriver.common.by import By
 from datetime import datetime
 from selenium.common.exceptions import NoSuchElementException
 import time
+from django.db import connection
+from SocialApps.models import WhatsAppMessage
 
 
 
@@ -207,8 +209,6 @@ def get_messages(driver, limit=100,user_id=-1,contact_name=1):
                 if message_data not in messages:
                     messages.append(message_data)
 
-
-
                 error = 0
                 if len(messages) >= limit:
                     break
@@ -263,6 +263,44 @@ def collect_messages_from_all_chats(user_id:int):
 
 
 
+
+
+def worker(user_id: int):
+    while True:
+        try:
+
+
+            # Prevent stale DB connections in multiprocessing
+            connection.close()
+            data = collect_messages_from_all_chats(user_id)
+
+
+
+                # message_data = {
+                #     "text": text,
+                #     "is_from_me": is_from_me,
+                #     "sender" : sender,
+                #     "receiver" : receiver,
+                #     "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # یا زمان دقیق‌تر با بررسی DOM
+                # }
+
+
+            # Save to DB
+            for message in data:
+                WhatsAppMessage.objects.create(
+                    sender=message['sender'],
+                    receiver=message['receiver'],
+                    message_text=message['text'],
+                    timestamp=message['timestamp'],
+                    chat_name=message['receiver'],
+
+                )
+
+            print(f"[user {user_id}] ✅ Data saved.")
+        except Exception as e:
+            print(f"[user {user_id}] ❌ Error: {e}")
+        
+        time.sleep(600)  # wait 10 minutes
 
 
 

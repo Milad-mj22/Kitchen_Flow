@@ -1,0 +1,39 @@
+{% extends "users/base.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+
+<!-- استایل سفارشی -->
+<link rel="stylesheet" href="{% static 'css/store.css' %}">
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-right">لیست خریداران</h2>
+        <a href="{% url 'add_buyer' %}" class="btn btn-success">افزودن خریدار جدید</a>
+    </div>
+
+    {% if buyers %}
+        <div class="card">
+            <ul class="list-group list-group-flush">
+                {% for buyer in buyers %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="text-right w-75">
+                            <strong>{{ buyer.first_name }} {{ buyer.last_name }}</strong><br>
+                            <small class="text-muted">شماره تماس: {{ buyer.phone_number }}</small><br>
+                            {% if buyer.nationality %}
+                                <small class="text-muted">ملیت: {{ buyer.nationality.name }}</small>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <a href="{% url 'edit_buyer' buyer.id %}" class="btn btn-sm btn-primary">ویرایش</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <p class="text-muted text-center">هیچ خریداری ثبت نشده است.</p>
+    {% endif %}
+</div>
+
+{% endblock content %}

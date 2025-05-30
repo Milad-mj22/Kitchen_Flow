@@ -5,13 +5,13 @@ import time
 import os
 import cv2
 from selenium.webdriver.common.by import By
+from multiprocessing import Process
 
 LEFT_TOLBAR_XPATH = '/html/body/div[1]/div/div/div[3]/div/header/div/div[1]'
 
 def is_user_logged_in(driver):
     try:
-        # آیکن منوی اصلی که فقط پس از ورود نمایش داده می‌شود
-        driver.find_element(by=By.XPATH,value=LEFT_TOLBAR_XPATH)
+        driver.find_element(by=By.XPATH, value=LEFT_TOLBAR_XPATH)
         return True
     except:
         return False
@@ -53,34 +53,37 @@ def start_whatsapp_session(user_id):
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
-    # chrome_options.add_argument("--headless")  # Old mode
-    chrome_options.add_argument("--headless=new")
-
+    # chrome_options.add_argument("--headless")  # Optional
+    # chrome_options.add_argument("--headless=new")
 
     driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://web.whatsapp.com/")
     time.sleep(10)
 
     start_time = time.time()
-    while time.time() - start_time < 60:  # تا ۶۰ ثانیه
+    while time.time() - start_time < 60:
         if is_user_logged_in(driver):
-            print("🎉 کاربر لاگین شد.")
+            print(f"🎉 کاربر {user_id} لاگین شد.")
             driver.quit()
-            return "LOGGED_IN"
+            return
 
         capture_qr(driver, qr_path_cropped)
         time.sleep(15)
 
-    print("⌛ زمان تمام شد، کاربر لاگین نشد.")
-    
-    
+    print(f"⌛ کاربر {user_id} لاگین نشد.")
     driver.quit()
-    return "NOT_LOGGED_IN"
 
 
 if __name__ == '__main__':
-    result = start_whatsapp_session(3)
+    # Start 5 concurrent WhatsApp sessions
+    processes = []
 
+    for user_id in range(1, 6):  # Users 1 to 5
+        p = Process(target=start_whatsapp_session, args=(user_id,))
+        p.start()
+        processes.append(p)
 
+    for p in processes:
+        p.join()
 
-    print("نتیجه نهایی:", result)
+    print("📌 همه سشن‌ها پایان یافتند.")

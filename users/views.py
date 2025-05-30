@@ -1582,10 +1582,13 @@ def take_store(request):
 
             ware_houses = Warehouse.objects.all()
 
+            buyers = Buyer.objects.all()
+
+
             # raw_materials_with_quantity = get_material_quantity(show_all=True)
             # mother_materials = get_mother_material_quantity(material_name='all',show_all=True, raw_materials_with_quantity =  raw_materials_with_quantity)
 
-            return render(request, 'users/store_take.html', {'warehouses':ware_houses,'backend_endpoint':BACKEND_ENDPOINT})
+            return render(request, 'users/store_take.html', {'warehouses':ware_houses,'backend_endpoint':BACKEND_ENDPOINT,'buyers':buyers})
         
 
 
@@ -1602,9 +1605,6 @@ def confrim_take_store(request):
             data.pop('csrfmiddlewaretoken','Not found')
             print(data)
 
-            data.pop('csrfmiddlewaretoken','Not found')
-            print(data)
-
 
             if 'warehouse' in data.keys():
                 ware_house = data['warehouse']
@@ -1612,6 +1612,18 @@ def confrim_take_store(request):
                 
             else:
                 return
+            
+
+            if 'buyer' in data.keys():
+
+                buyer = data['buyer']
+                data.pop('buyer','Not found')
+                buyer = Buyer.objects.filter(id=buyer).first()
+            else:
+                return
+            
+                
+
 
             profile = Profile.objects.get(id = request.user.id)
 
@@ -1632,7 +1644,7 @@ def confrim_take_store(request):
                 decimal_value = Decimal(items[item_id])
 
                 inventory, created = Inventory.objects.get_or_create(inventory_raw_material=raw_material_instance,warehouse=ware_house)
-                status,message = inventory.remove_stock(amount=decimal_value,user=profile)
+                status,message = inventory.remove_stock(amount=decimal_value,user=profile,buyer=buyer)
                 print('status : ',status)
                 # if status:
                 messages.success(request,message)
@@ -2119,3 +2131,168 @@ def no_access(request):
     return render(request, 'users/no_access.html')
 
 
+
+
+
+
+
+from .models import Buyer
+from .forms import BuyerForm
+
+def add_buyer(request):
+    if request.method == 'POST':
+        form = BuyerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('buyer_list')  # change to your desired success URL
+    else:
+        form = BuyerForm()
+    return render(request, 'Buyer/buyer_form.html', {'form': form, 'title': 'افزودن خریدار'})
+
+def edit_buyer(request, pk):
+    buyer = get_object_or_404(Buyer, pk=pk)
+    if request.method == 'POST':
+        form = BuyerForm(request.POST, instance=buyer)
+        if form.is_valid():
+            form.save()
+            return redirect('buyer_list')
+    else:
+        form = BuyerForm(instance=buyer)
+    return render(request, 'Buyer/buyer_form.html', {'form': form, 'title': 'ویرایش خریدار'})
+
+
+def buyer_list(request):
+    buyers = Buyer.objects.all()
+    return render(request, 'Buyer/buyer_list.html', {'buyers': buyers})
+
+
+
+from django.db.models import Count, Sum
+from django.shortcuts import render
+from .models import Buyer, InventoryLog
+
+def buyer_dashboard(request):
+    purchase_logs = InventoryLog.objects.filter(change_type='REMOVE', buyer__isnull=False)
+
+    # مشتریان برتر
+    top_buyers = purchase_logs.values('buyer__id', 'buyer__first_name').annotate(
+        total_purchases=Count('id')
+    ).order_by('-total_purchases')[:10]
+
+    # محصولات محبوب هر مشتری
+    from collections import defaultdict
+    buyer_products = defaultdict(list)
+    top_buyer_ids = [b['buyer__id'] for b in top_buyers]
+    for log in purchase_logs.filter(buyer__id__in=top_buyer_ids):
+        buyer_products[log.buyer.id].append(log)
+
+    top_products = []
+    for buyer_id, logs in buyer_products.items():
+        product_totals = defaultdict(float)
+        buyer_name = logs[0].buyer.first_name if logs else ""
+        for log in logs:
+            material_name = log.inventory.inventory_raw_material.name
+            product_totals[material_name] += float(log.amount)
+
+        if product_totals:
+            top_product = max(product_totals.items(), key=lambda x: x[1])
+            top_products.append({
+                'buyer_id': buyer_id,
+                'buyer_name': buyer_name,
+                'top_product_name': top_product[0],
+                'top_product_amount': top_product[1],
+            })
+
+    # مشتریان بدون خرید
+    inactive_buyers = Buyer.objects.exclude(id__in=purchase_logs.values_list('buyer_id', flat=True))
+
+    # مشتریان وفادار
+    loyal_buyers = purchase_logs.values('buyer__id', 'buyer__first_name').annotate(
+        total_purchases=Count('id')
+    ).filter(total_purchases__gte=5).order_by('-total_purchases')
+
+    # برای نمودار
+    chart_labels = [b['buyer__first_name'] for b in top_buyers]
+    chart_data = [b['total_purchases'] for b in top_buyers]
+
+    context = {
+        'top_buyers': top_buyers,
+        'top_products': top_products,
+        'inactive_buyers': inactive_buyers,
+        'loyal_buyers': loyal_buyers,
+        'chart_labels': chart_labels,
+        'chart_data': chart_data,
+    }
+
+    return render(request, 'Buyer/buyer_dashboard.html', context)
+
+
+
+
+
+
+@login_required
+def buyer_dashboard(request):
+    try:
+        buyer = request.user.buyer  # Assumes OneToOne relation between User and Buyer
+        logs = InventoryLog.objects.filter(buyer=buyer).order_by('-date')
+    except Buyer.DoesNotExist:
+        logs = []
+
+    return render(request, 'Buyer/user_dashboard.html', {'logs': logs})
+
+
+
+
+
+from django.shortcuts import render, redirect
+from .models import Buyer, InventoryLog
+from .forms import BuyerLoginForm
+
+def buyer_login_view(request):
+    if request.method == 'POST':
+        form = BuyerLoginForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            phone = form.cleaned_data['phone']
+            try:
+                buyer = Buyer.objects.get(first_name=name, phone_number=phone)
+                request.session['buyer_id'] = buyer.id  # Save login session
+                return redirect('buyer_dashboard')
+            except Buyer.DoesNotExist:
+                form.add_error(None, 'اطلاعات وارد شده صحیح نیست.')
+    else:
+        form = BuyerLoginForm()
+
+    return render(request, 'Buyer/buyer_login.html', {'form': form})
+
+def buyer_dashboard_view(request):
+    buyer_id = request.session.get('buyer_id')
+    if not buyer_id:
+        return redirect('buyer_login')
+
+    buyer = Buyer.objects.get(id=buyer_id)
+    logs = InventoryLog.objects.filter(buyer=buyer).order_by('-date')
+
+    return render(request, 'Buyer/user_dashboard.html', {
+        'buyer': buyer,
+        'logs': logs
+    })
+
+def buyer_logout_view(request):
+    request.session.flush()
+    return redirect('buyer_login')
+
+
+def confirm_purchase_view(request, log_id):
+    buyer_id = request.session.get('buyer_id')
+    if not buyer_id:
+        return redirect('buyer_login')
+
+    log = get_object_or_404(InventoryLog, id=log_id, buyer_id=buyer_id)
+
+    log.confirmed_by_buyer = True
+    log.save()
+
+    messages.success(request, 'خرید با موفقیت تایید شد.')
+    return redirect('buyer_dashboard')

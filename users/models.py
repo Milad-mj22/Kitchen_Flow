@@ -398,14 +398,14 @@ class Inventory(models.Model):
             return True , 'مقادیر مورد نظر با موفقیت اضافه گردید'
         except:
             return False, 'خطا در افزودن در دیتابیس'
-    def remove_stock(self, amount,user):
+    def remove_stock(self, amount,user,buyer=None):
         """برداشتن کالا از انبار و ایجاد لاگ به‌طور خودکار"""
         if self.quantity >= amount:
             self.quantity -= amount
             self.last_updated = timezone.now()
             self.receipt_Number = -123  # ذخیره شماره فیش
             self.save()
-            InventoryLog.objects.create(inventory=self, change_type='REMOVE', amount=amount,user=user,receipt_Number = self.receipt_Number)
+            InventoryLog.objects.create(inventory=self, change_type='REMOVE', amount=amount,user=user,receipt_Number = self.receipt_Number,buyer=buyer)
             return True , 'مقادیر مورد نظر با موفقیت حذف گردید'
         else:
             # raise ValueError("موجودی کافی نیست.")
@@ -416,6 +416,29 @@ class Inventory(models.Model):
         return f"{self.inventory_raw_material.name} - {self.quantity} in {self.warehouse.name}"
 
 
+class Nationality(models.Model):
+    name = models.CharField(max_length=100, verbose_name='نام ملیت')
+
+    def __str__(self):
+        return self.name
+
+
+class Buyer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    first_name = models.CharField(max_length=100, verbose_name='نام ')
+    last_name = models.CharField(max_length=100, verbose_name='نام نام خانوادگی', null=True, blank=True)
+    phone_number = models.CharField(max_length=20, verbose_name='شماره تماس')
+    nationality = models.ForeignKey(Nationality, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='ملیت')
+    national_code = models.CharField(max_length=10, verbose_name='کد ملی')
+    province = models.CharField(max_length=50, verbose_name='استان', blank=True, null=True)
+    city = models.CharField(max_length=50, verbose_name='شهر', blank=True, null=True)
+    nation = models.CharField(max_length=50, verbose_name='شهر', blank=True, null=True)
+    address = models.TextField(verbose_name='آدرس', blank=True, null=True)
+    details = models.TextField(verbose_name='توضیحات تکمیلی', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.first_name} - {self.last_name}"
+
 
 
 class InventoryLog(models.Model):
@@ -424,9 +447,12 @@ class InventoryLog(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(Profile, on_delete= models.CASCADE,related_name='user_inventory_log',blank=True,null=True,default=1)
+    buyer = models.ForeignKey(Buyer, on_delete=models.SET_NULL, null=True, blank=True)
+   
     receipt_Number = models.IntegerField( null=True,blank=True, default=0)
 
-
+    confirmed_by_buyer = models.BooleanField(default=False)  # Add this line
+    
     def jalali_date(self):
         return JalaliDatetime(self.date).strftime('%Y/%m/%d %H:%M:%S')
 
@@ -563,6 +589,8 @@ class RemainingMaterialsUsage(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.used_at}"
+
+
 
 
 

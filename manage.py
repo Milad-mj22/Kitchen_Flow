@@ -3,6 +3,8 @@
 import os
 import sys
 
+global celery_process
+celery_process = None
 
 def main():
     """Run administrative tasks."""

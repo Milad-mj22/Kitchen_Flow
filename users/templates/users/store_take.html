@@ -6,6 +6,13 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/store.css' %}">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Add Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Add jQuery (already added) and Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
 
 <html lang="fa" dir="rtl"></html>
 
@@ -26,7 +33,7 @@
 function submitForm() {
     const warehouseSelect = document.getElementById('warehouse');
     const warehouseName = warehouseSelect.options[warehouseSelect.selectedIndex].text;
-
+    const buyerId = document.getElementById('buyer').value;
     // Prepare data to send to the server
     const data = {
         warehouse: warehouseName,
@@ -188,6 +195,12 @@ function submitAllItems() {
     }
 
 
+    const buyerId = document.querySelector('#buyer').value;
+    if (!buyerId) {
+        alert('لطفاً مفصد خروج را انتخاب کنید');
+        return;
+    }
+
     // Send the selected items via AJAX
     $.ajax({
         type: 'POST',
@@ -195,6 +208,7 @@ function submitAllItems() {
         data: {
             items: JSON.stringify(selectedItems),  // Convert selected items to a JSON string
             warehouse: warehouseName, 
+            buyer: buyerId,
             csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value  // Include the CSRF token
         },
         success: function(response) {
@@ -224,6 +238,16 @@ function submitAllItems() {
         
     });
 }
+
+
+
+    $(document).ready(function() {
+        $('#buyer').select2({
+            placeholder: "جستجوی خریدار...",
+            dir: "rtl",
+            width: '100%'
+        });
+    });
 
 
 
@@ -266,6 +290,20 @@ function submitAllItems() {
 
 
 
+        <!-- Buyer Dropdown -->
+        <div class="mb-4 d-flex align-items-center" style="width: 100%;">
+            <label for="buyer" class="form-label" style="flex: 0 0 150px; font-weight: bold; direction: rtl;">
+                انتخاب خریدار
+            </label>
+            <select id="buyer" name="buyer" class="form-select shadow-sm" style="flex: 1; direction: rtl; text-align: right;">
+                <option value="" disabled selected>انتخاب خریدار...</option>
+                {% for buyer in buyers %}
+                    <option value="{{ buyer.id }}">{{ buyer.first_name }} {{ buyer.last_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
 
 
 
@@ -274,6 +312,11 @@ function submitAllItems() {
             <button type="button" class="btn btn-primary btn-sm" onclick="submitForm()">ثبت انبار</button>
 
         </div>
+    
+    
+    
+    
+    
     </form>
 
 </div>

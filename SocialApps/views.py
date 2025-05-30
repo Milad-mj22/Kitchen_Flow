@@ -6,7 +6,8 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from users.models import User
 from .WhatsApp import collect_messages_from_all_chats, start_whatsapp_session
-
+from multiprocessing import Process
+from .task import collect_user_messages
 
 def home(request):
     return HttpResponse("Hello from my app!")
@@ -37,9 +38,19 @@ def image_to_base64(image_path):
 
 
 
-def WA_get_messages(request):
+def WA_get_messages(request,user_id):
     user_id = request.user.id
-    messages = collect_messages_from_all_chats(user_id)
+    # messages = collect_messages_from_all_chats(user_id)
+
+
+    # p = Process(target=collect_messages_from_all_chats, args=(user_id,))
+    # p.start()
+
+    collect_user_messages.delay(user_id)
+    return HttpResponse("Stated read my app!")
+
+
+
     return HttpResponse("Hello from my app!")
     
 

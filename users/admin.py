@@ -5,7 +5,7 @@ from .models import  Location, Profile
 from .models import Tools,Post,Tools,Post_quill , jobs , Projects ,raw_material,create_order\
                     ,mother_material,FoodFilter,SnappFoodList,cities,FoodRawMaterial,mother_food,mode_raw_materials,\
                     Inventory,InventoryLog,Warehouse,RestaurantBranch,NightOrderRemainder,AllowedLocation,\
-                    EntryExitLog,CapturedImage,MaterialComposition,ProductionLog
+                    EntryExitLog,CapturedImage,MaterialComposition,ProductionLog,Nationality,Buyer
 
 
 
@@ -39,6 +39,8 @@ admin.site.register(mode_raw_materials)
 admin.site.register(CapturedImage)
 admin.site.register(MaterialComposition)
 admin.site.register(ProductionLog)
+admin.site.register(Nationality)
+admin.site.register(Buyer)
 # admin.site.register(mode_raw_materials)
 # admin.site.register(Inventory)
 
@@ -101,16 +103,16 @@ admin.site.register(Warehouse, WarehouseAdmin)
 
 class InventoryLogAdmin(admin.ModelAdmin):
     # Fields to display in the list view
-    list_display = ('inventory', 'change_type', 'amount', 'jalali_date', 'user', 'warehouse' , 'receipt_Number')
+    list_display = ('inventory','buyer', 'change_type', 'amount', 'jalali_date', 'user', 'warehouse' , 'receipt_Number')
 
     # Add filtering options
-    list_filter = ('change_type', 'inventory__warehouse', 'date')
+    list_filter = ('change_type','buyer', 'inventory__warehouse', 'date')
     
     # Enable search functionality for specific fields
     search_fields = ('inventory__raw_material__name', 'user__username', 'inventory__warehouse__name')
     
     # Fields to display in the form
-    fields = ('inventory', 'change_type', 'amount', 'date', 'user', 'receipt_Number')
+    fields = ('inventory','buyer', 'change_type', 'amount', 'date', 'user', 'receipt_Number')
     
     # Method to display the Jalali date in the admin list view
     def jalali_date(self, obj):
