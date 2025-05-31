@@ -354,3 +354,19 @@ from django import forms
 class BuyerLoginForm(forms.Form):
     name = forms.CharField(label="نام", max_length=100)
     phone = forms.CharField(label="شماره تلفن", max_length=20)
+
+
+
+
+
+# forms.py
+from .models import DailyReports
+
+class DailyReportForm(forms.ModelForm):
+    class Meta:
+        model = DailyReports
+        fields = ['title', 'content']
+        widgets = {
+            'title': forms.Select(attrs={'class': 'form-select'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        }

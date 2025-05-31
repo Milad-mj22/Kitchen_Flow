@@ -54,6 +54,12 @@ from django.core.files.base import ContentFile
 
 from .models import RestaurantBranch,NightOrderRemainder
 
+from django.shortcuts import render, redirect
+from .models import Buyer, InventoryLog
+from .forms import BuyerLoginForm
+
+
+
 CACHE_CITIES = 'snapp_discount/cache/cities'
 
 # backend_endpoint
@@ -2232,7 +2238,7 @@ def buyer_dashboard(request):
 
 
 @login_required
-def buyer_dashboard(request):
+def buyer_user_dashboard(request):
     try:
         buyer = request.user.buyer  # Assumes OneToOne relation between User and Buyer
         logs = InventoryLog.objects.filter(buyer=buyer).order_by('-date')
@@ -2244,10 +2250,6 @@ def buyer_dashboard(request):
 
 
 
-
-from django.shortcuts import render, redirect
-from .models import Buyer, InventoryLog
-from .forms import BuyerLoginForm
 
 def buyer_login_view(request):
     if request.method == 'POST':
@@ -2296,3 +2298,26 @@ def confirm_purchase_view(request, log_id):
 
     messages.success(request, 'خرید با موفقیت تایید شد.')
     return redirect('buyer_dashboard')
+
+
+
+from .models import DailyReports , ReportTitles
+from .forms import DailyReportForm
+from datetime import date
+
+# views.py
+@login_required
+def daily_report_view(request):
+    if request.method == 'POST':
+        form = DailyReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.user = request.user
+            report.save()
+            return redirect('daily_report')
+    else:
+        form = DailyReportForm()
+
+    reports = DailyReports.objects.filter(user=request.user).order_by('-date', '-created_at')
+    types = ReportTitles.objects.all()
+    return render(request, 'users/daily_report.html', {'form': form, 'reports': reports,'types':types})

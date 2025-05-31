@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'order_flow',
     'api',
     'SocialApps',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

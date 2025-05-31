@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import buyer_dashboard, buyer_dashboard_view, buyer_login_view, buyer_logout_view, confirm_purchase_view, error_page, home, material_composition_view, no_access, profile, RegisterView, save_subscription, send_notification, send_test_notification, show_menu_options,tools \
+from .views import buyer_dashboard, buyer_dashboard_view, buyer_login_view, buyer_logout_view, confirm_purchase_view, daily_report_view, error_page, home, material_composition_view, no_access, profile, RegisterView, save_subscription, send_notification, send_test_notification, show_menu_options,tools \
         ,my_orders,add_raw_material,post_edit_quil\
         ,create_order,add_mother_material,show_order,snapp,show_restaurant_list,\
         restaurant_food_list,add_restaurant,print_order,foodRawMaterials,addfoodrawmaterial,show_food_material,night_food_order,\
@@ -70,6 +70,7 @@ urlpatterns = [
     path('profile/<int:id>/history_entry/', histoty_entry, name='register_entry'),
     # path('profile/<int:id>/register_entry/', register_exit, name='register_exit'),
     path('get_allowed_locations/', get_allowed_locations, name='register_entry'),
+    path('profile/daily-report/', daily_report_view, name='daily_report'),
 
     
 
@@ -104,7 +105,6 @@ urlpatterns = [
     path('buyers/dashboard_person/', buyer_dashboard_view, name='buyer_dashboard'),
     path('buyers/logout/',buyer_logout_view, name='buyer_logout'),
     path('buyers/confirm/<int:log_id>/', confirm_purchase_view, name='confirm_purchase'),
-
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

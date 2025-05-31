@@ -26,6 +26,31 @@ class jobs(models.Model):
 
 
 
+# models.py
+class ReportTitles(models.Model):
+    title = models.CharField(max_length=255,blank=True,default='روزانه')
+
+    def __str__(self):
+        return self.title
+
+
+class DailyReports(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='daily_reports')
+    date = models.DateField(default=timezone.now)
+
+    # title = models.CharField(max_length=255)  # <-- Keep this
+    title = models.ForeignKey(ReportTitles, on_delete=models.CASCADE,related_name='daily_reports', null=True, blank=True)  # New field
+
+    # title = models.ForeignKey(ReportTitle, on_delete=models.CASCADE,blank=True,null=True)  # now using FK
+    content = models.TextField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.user.username} -  ({self.date})'   #{self.title}
+
+
 
 
 # Extending User Model Using a One-To-One Link

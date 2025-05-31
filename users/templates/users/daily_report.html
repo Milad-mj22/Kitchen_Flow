@@ -1,0 +1,118 @@
+{% extends "users/base.html" %}
+{% block title %}ثبت گزارش روزانه{% endblock %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Vazirmatn', sans-serif;
+    }
+
+    .form-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-label {
+        font-weight: 600;
+        font-size: 1rem;
+        text-align: right;
+    }
+
+    .form-select, .form-control {
+        border-radius: 0.6rem;
+        padding: 0.75rem 1rem;
+        font-size: 1.05rem;
+        background-color: #f1f1f1;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .form-select:hover, .form-control:hover {
+        background-color: #e2e2e2;
+    }
+
+    .report-card {
+        border-radius: 10px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .report-card .card-body {
+        padding: 1.25rem;
+    }
+
+    .report-content {
+        max-height: 300px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        padding: 0.5rem;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 1rem;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        h2, h4 {
+            text-align: center;
+        }
+    }
+</style>
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <h2 class="text-center text-dark mb-4">ثبت گزارش جدید</h2>
+
+        <div class="d-flex justify-content-center">
+            <div class="form-container mb-5 w-100">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label" for="id_title">عنوان گزارش</label>
+                        {{ form.title|add_class:"form-select" }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="id_content">محتوای گزارش</label>
+                        {{ form.content|add_class:"form-control" }}
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">ثبت گزارش</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <h4 class="text-secondary mb-3 text-center">لیست گزارش‌های شما</h4>
+            {% for report in reports %}
+                <div class="report-card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong class="text-primary">{{ report.date }} - {{ report.title }}</strong>
+                        </div>
+                        <div class="report-content">
+                            {{ report.content }}
+                        </div>
+                        <small class="text-muted">ایجاد شده در: {{ report.created_at }}</small>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-muted">هنوز گزارشی ثبت نشده است.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
