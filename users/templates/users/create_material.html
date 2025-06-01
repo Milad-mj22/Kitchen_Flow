@@ -1,66 +1,84 @@
 {% extends "users/base.html" %}
-{% block title %} Home Page {% endblock title%}
+{% block title %} Home Page {% endblock title %}
 {% block content %}
 
 {% load static %}
-<link href="{% static 'css\profile_page.css' %}" rel="stylesheet">
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"> -->
 
 <style>
     .main {
         width: 100%;
-        max-width: 800px; /* Adjust max-width as needed */
-        margin: 10px auto 0; /* Adjust top margin to create space between header toolbar */
-        padding: 0 15px; /* Add some padding to prevent content from touching the edges */
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 0 16px;
         display: flex;
-        justify-content: center; /* Center horizontally */
-        align-items: center; /* Center vertically */
-        /* height: calc(100vh - 50px); Set the height to 100% of the viewport height minus the header toolbar height */
+        justify-content: center;
+        align-items: flex-start;
     }
 
     .form-container {
-        width: 100%; /* Make the form container full width */
-        max-width: 400px; /* Adjust max-width as needed */
-        margin-top: 0px; /* Add some top margin */
+        width: 100%;
+        max-width: 500px;
+        background: #ffffff;
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
-    /* Adjust form fields for smaller screens */
-    @media screen and (max-width: 576px) {
-        .form-group {
-            margin-bottom: 15px; /* Add margin to separate form fields */
-        }
-        .btn {
-            width: 100%; /* Make submit button full width on smaller screens */
-        }
+    .form-container form input,
+    .form-container form textarea,
+    .form-container form select {
+        width: 100%;
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 1rem;
+        background-color: #f9f9f9;
+        transition: 0.3s ease-in-out;
     }
 
-    .btn-block {
-    display: block;
-    width: 100%;
-  }
+    .form-container form input:focus,
+    .form-container form textarea:focus,
+    .form-container form select:focus {
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
 
 
 
+select {
+  direction: rtl;           /* Make dropdown text RTL */
+  text-align: right;        /* Align text right */
+  font-family: 'Vazirmatn', sans-serif; /* Use your font */
+  padding: 10px 12px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  width: 100%;
+  min-height: fit-content;
+  box-sizing: border-box;
+}
+
+    @media (max-width: 576px) {
+        .btn-block {
+            margin-top: 12px;
+        }
+    }
 </style>
 
 <div class="main">
     <div class="form-container">
-        <!-- <head>
-            {{form.media}}
-            <title> My Forum Post</title>
-            <script src="https://cdn.tiny.cloud/1/68j3cnbey1kzlifrszj8weq2sp22nr5nmua9fsaj21i32hg2/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-        </head> -->
-        <body>
-            <form method="post">
-                {% csrf_token %}
-                <!-- {{form.as_table}} -->
-                {% for field in form %}
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <div>
                     {{ field }}
-                    <p></p>
-                {% endfor %}
-                <input type="submit" class="btn btn-primary btn-block" value="Submit">
-            </form>
-        </body>
+                </div>
+            {% endfor %}
+            <input type="submit" class="btn-outline-primary" value="ثبت اطلاعات">
+        </form>
     </div>
 </div>
+
 {% endblock %}

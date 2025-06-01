@@ -2306,18 +2306,47 @@ from .forms import DailyReportForm
 from datetime import date
 
 # views.py
+# @login_required
+# def daily_report_view(request):
+#     if request.method == 'POST':
+#         form = DailyReportForm(request.POST)
+#         if form.is_valid():
+#             report = form.save(commit=False)
+#             report.user = request.user
+#             report.save()
+#             return redirect('daily_report')
+#     else:
+#         form = DailyReportForm()
+
+#     reports = DailyReports.objects.filter(user=request.user).order_by('-date', '-created_at')
+#     types = ReportTitles.objects.all()
+#     return render(request, 'users/daily_report.html', {'form': form, 'reports': reports,'types':types})
+
+
+
 @login_required
 def daily_report_view(request):
+    reports = DailyReports.objects.filter(user=request.user).order_by('-created_at')
+    last_report = reports.first()  # Get only the most recent one
     if request.method == 'POST':
-        form = DailyReportForm(request.POST)
+        report_id = request.POST.get("report_id")
+        if report_id and str(last_report.id) == report_id:
+            # Edit only the last report
+            form = DailyReportForm(request.POST, instance=last_report)
+        else:
+            form = DailyReportForm(request.POST)
+
         if form.is_valid():
             report = form.save(commit=False)
             report.user = request.user
             report.save()
             return redirect('daily_report')
+
     else:
         form = DailyReportForm()
 
-    reports = DailyReports.objects.filter(user=request.user).order_by('-date', '-created_at')
-    types = ReportTitles.objects.all()
-    return render(request, 'users/daily_report.html', {'form': form, 'reports': reports,'types':types})
+    return render(request, 'users/daily_report.html', {
+        'form': form,
+        'reports': reports,
+        'last_report_id': last_report.id if last_report else None,
+    })
